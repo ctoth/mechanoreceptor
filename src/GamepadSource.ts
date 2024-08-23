@@ -1,5 +1,16 @@
 import { InputSource } from './InputSource';
 
+// Extend the Gamepad interface to include vibration actuator
+interface GamepadWithHaptics extends Gamepad {
+  vibrationActuator?: {
+    playEffect(type: string, params: {
+      duration: number,
+      strongMagnitude: number,
+      weakMagnitude: number
+    }): Promise<void>;
+  };
+}
+
 interface GamepadState {
   buttons: { pressed: boolean; value: number }[];
   axes: number[];
@@ -91,14 +102,13 @@ export class GamepadSource implements InputSource {
   }
 
   vibrate(gamepadIndex: number, duration: number, weakMagnitude: number, strongMagnitude: number): void {
-    const gamepad = navigator.getGamepads()[gamepadIndex];
-    if (gamepad && 'vibrationActuator' in gamepad && gamepad.vibrationActuator) {
+    const gamepad = navigator.getGamepads()[gamepadIndex] as GamepadWithHaptics;
+    if (gamepad && gamepad.vibrationActuator) {
       gamepad.vibrationActuator.playEffect('dual-rumble', {
-        startDelay: 0,
         duration: duration,
         weakMagnitude: weakMagnitude,
         strongMagnitude: strongMagnitude
-      });
+      }).catch(error => console.error('Vibration error:', error));
     }
   }
 }
