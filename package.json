@@ -1,0 +1,25 @@
+{
+  "name": "mechanoreceptor",
+  "version": "0.0.1",
+  "description": "Translate user input into signals your game can understand",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctoth/mechanoreceptor.git"
+  },
+  "keywords": [
+    "gamepad",
+    "keyboard",
+    "input",
+    "game"
+  ],
+  "author": "Christopher Toth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ctoth/mechanoreceptor/issues"
+  },
+  "homepage": "https://github.com/ctoth/mechanoreceptor#readme"
+}
