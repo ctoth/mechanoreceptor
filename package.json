@@ -4,7 +4,8 @@
   "description": "Translate user input into signals your game can understand",
   "main": "dist/index.js",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/ctoth/mechanoreceptor/issues"
   },
-  "homepage": "https://github.com/ctoth/mechanoreceptor#readme"
+  "homepage": "https://github.com/ctoth/mechanoreceptor#readme",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
 }
