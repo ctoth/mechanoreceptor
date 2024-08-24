@@ -2,20 +2,22 @@ import { PlaywrightTestConfig, devices } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
-  timeout: 60000,
+  timeout: 30000,
   use: {
-    headless: false,
+    headless: true,
     viewport: { width: 1280, height: 720 },
-    trace: 'on-first-retry',
-    video: 'on-first-retry',
+    trace: 'on',
+    video: 'on',
+    screenshot: 'on',
     launchOptions: {
-      args: ['--verbose', '--no-sandbox', '--disable-setuid-sandbox']
+      slowMo: 100,
     },
   },
   webServer: {
     command: 'npm run dev',
     port: 3000,
-    timeout: 30000,
+    timeout: 60000,
+    reuseExistingServer: !process.env.CI,
   },
   reporter: [
     ['list'],
@@ -27,6 +29,8 @@ const config: PlaywrightTestConfig = {
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  retries: 2,
+  workers: 1,
 };
 
 export default config;

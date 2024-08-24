@@ -3,13 +3,15 @@ import { test, expect } from '@playwright/test';
 test.describe('InputMapper E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:3000/test.html');
-    await page.waitForFunction(() => (window as any).mechanoreceptorReady === true);
-
+    
     page.on('console', msg => {
       console.log(`Browser console ${msg.type()}: ${msg.text()}`);
     });
 
+    await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 10000 });
+
     await page.evaluate(() => {
+      console.log('Initializing InputMapper...');
       const mappingManager = new window.Mechanoreceptor.MappingConfigManager();
       const keyboardSource = new window.Mechanoreceptor.KeyboardSource();
       const mouseSource = new window.Mechanoreceptor.MouseSource();
@@ -46,9 +48,10 @@ test.describe('InputMapper E2E Tests', () => {
 
   test('Keyboard input mapping in game context - Space key', async ({ page }) => {
     await page.keyboard.press('Space');
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     const result = await page.evaluate(() => {
+      console.log('Evaluating keyboard input...');
       if (!window.inputMapper) {
         console.error('inputMapper is not defined');
         return { actions: [], keyboardState: [], context: null };
@@ -70,9 +73,10 @@ test.describe('InputMapper E2E Tests', () => {
 
   test('Mouse input mapping in game context', async ({ page }) => {
     await page.mouse.click(100, 100);
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     const result = await page.evaluate(() => {
+      console.log('Evaluating mouse input...');
       window.inputMapper.update();
       return {
         actions: window.inputMapper.mapInput(),
@@ -89,12 +93,16 @@ test.describe('InputMapper E2E Tests', () => {
   });
 
   test('Context switching', async ({ page }) => {
-    await page.evaluate(() => window.inputMapper.setContext('menu'));
+    await page.evaluate(() => {
+      console.log('Switching context to menu...');
+      window.inputMapper.setContext('menu');
+    });
 
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     let result = await page.evaluate(() => {
+      console.log('Evaluating menu context...');
       window.inputMapper.update();
       return {
         actions: window.inputMapper.mapInput(),
@@ -108,9 +116,10 @@ test.describe('InputMapper E2E Tests', () => {
     expect(result.context).toBe('menu');
 
     await page.keyboard.press('Space');
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     result = await page.evaluate(() => {
+      console.log('Evaluating menu context with game input...');
       window.inputMapper.update();
       return {
         actions: window.inputMapper.mapInput(),
