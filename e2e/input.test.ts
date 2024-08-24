@@ -16,9 +16,13 @@ test.describe("Input tests", () => {
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
         await page.waitForFunction(
-          () => (window as any).mechanoreceptorReady === true,
-          { timeout: 1000 }
+          () => (window as any).mechanoreceptorReady === true || (window as any).mechanoreceptorError,
+          { timeout: 5000 }
         );
+        const error = await page.evaluate(() => (window as any).mechanoreceptorError);
+        if (error) {
+          throw new Error(`Mechanoreceptor failed to initialize: ${error}`);
+        }
       } catch (error) {
         console.error("Timeout waiting for Mechanoreceptor to be ready");
         console.log("Captured logs:", logs.join("\n"));

@@ -11,7 +11,7 @@
         console.log('Script started');
         try {
             console.log('Importing Mechanoreceptor');
-            import * as Mechanoreceptor from '../dist/index.js';
+            const Mechanoreceptor = await import('../dist/index.js');
             console.log('Mechanoreceptor imported successfully');
             window.Mechanoreceptor = Mechanoreceptor;
             
@@ -23,37 +23,38 @@
             mouseSource.initialize();
             console.log('Mechanoreceptor components initialized');
 
-        window.lastKeyPressed = null;
-        window.lastMouseClick = null;
+            window.lastKeyPressed = null;
+            window.lastMouseClick = null;
 
-        keyboardSource.onKeyDown = (event) => {
-            window.lastKeyPressed = event.code;
-            console.log('Key pressed:', event.code);
-        };
+            keyboardSource.onKeyDown = (event) => {
+                window.lastKeyPressed = event.code;
+                console.log('Key pressed:', event.code);
+            };
 
-        mouseSource.onMouseDown = (event) => {
-            window.lastMouseClick = { x: event.clientX, y: event.clientY };
-            console.log('Mouse clicked:', event.clientX, event.clientY);
-        };
+            mouseSource.onMouseDown = (event) => {
+                window.lastMouseClick = { x: event.clientX, y: event.clientY };
+                console.log('Mouse clicked:', event.clientX, event.clientY);
+            };
 
-        function update() {
-            keyboardSource.update();
-            mouseSource.update();
-            requestAnimationFrame(update);
+            function update() {
+                keyboardSource.update();
+                mouseSource.update();
+                requestAnimationFrame(update);
+            }
+
+            update();
+
+            // Expose sources for debugging
+            window.keyboardSource = keyboardSource;
+            window.mouseSource = mouseSource;
+
+            // Signal that Mechanoreceptor is ready
+            window.mechanoreceptorReady = true;
+            console.log('Mechanoreceptor is ready');
+        } catch (error) {
+            console.error('Error initializing Mechanoreceptor:', error);
+            window.mechanoreceptorError = error;
         }
-
-        update();
-
-        // Expose sources for debugging
-        window.keyboardSource = keyboardSource;
-        window.mouseSource = mouseSource;
-
-        // Signal that Mechanoreceptor is ready
-        window.mechanoreceptorReady = true;
-        console.log('Mechanoreceptor is ready');
-    } catch (error) {
-        console.error('Error initializing Mechanoreceptor:', error);
-    }
     </script>
 </body>
 </html>
