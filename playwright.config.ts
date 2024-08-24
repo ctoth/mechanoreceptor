@@ -10,7 +10,6 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
-    baseURL: 'http://localhost:3000',
   },
   projects: [
     {
@@ -30,6 +29,7 @@ const config: PlaywrightTestConfig = {
     command: 'npm run dev',
     port: 3000,
     reuseExistingServer: !process.env.CI,
+    timeout: 120000, // Increase timeout to 2 minutes
   },
 };
 

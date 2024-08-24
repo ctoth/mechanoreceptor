@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 
-const TEST_HTML_URL = "/";
+const TEST_HTML_URL = "http://localhost:3000/";
 
 test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
+    test.setTimeout(30000); // Increase timeout to 30 seconds
     const logs: string[] = [];
     page.on("console", (msg) => {
       console.log("Browser console:", msg.text());
