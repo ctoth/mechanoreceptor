@@ -4,9 +4,9 @@
   "description": "Translate user input into signals your game can understand",
   "main": "dist/index.js",
   "scripts": {
-    "serve": "http-server   -p 3000 public",
+    "serve": "http-server -p 3000",
     "test": "jest",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run serve & playwright test",
     "test:all": "npm run test && npm run test:e2e",
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
