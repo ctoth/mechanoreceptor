@@ -3,6 +3,7 @@ import { KeyboardSource } from './KeyboardSource';
 import { MouseSource } from './MouseSource';
 import { GamepadSource } from './GamepadSource';
 import { TouchSource } from './TouchSource';
+import { ComboSystem } from './ComboSystem';
 
 export class InputMapper {
   private mappingManager: MappingConfigManager;
@@ -10,6 +11,7 @@ export class InputMapper {
   private mouseSource: MouseSource;
   private gamepadSource: GamepadSource;
   private touchSource: TouchSource;
+  private comboSystem: ComboSystem;
   private currentContext: string = 'default';
 
   constructor(
@@ -24,6 +26,7 @@ export class InputMapper {
     this.mouseSource = mouseSource;
     this.gamepadSource = gamepadSource;
     this.touchSource = touchSource;
+    this.comboSystem = new ComboSystem();
   }
 
   setContext(contextId: string): void {
@@ -37,6 +40,14 @@ export class InputMapper {
     for (const mapping of mappings) {
       if (this.isInputActive(mapping)) {
         triggeredActions.push(mapping.actionId);
+        
+        // Check for combos
+        const comboInput = {
+          inputType: mapping.inputType,
+          inputCode: mapping.inputCode
+        };
+        const triggeredCombos = this.comboSystem.checkCombos(comboInput);
+        triggeredActions.push(...triggeredCombos);
       }
     }
 
@@ -59,5 +70,13 @@ export class InputMapper {
       default:
         return false;
     }
+  }
+
+  addCombo(combo: { id: string, sequence: { inputType: string, inputCode: string | number }[], maxTimeWindow: number }): void {
+    this.comboSystem.addCombo(combo);
+  }
+
+  removeCombo(comboId: string): void {
+    this.comboSystem.removeCombo(comboId);
   }
 }
