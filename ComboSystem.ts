@@ -4,7 +4,7 @@ interface ComboInput {
   timeWindow?: number;
 }
 
-interface ComboDefinition {
+export interface ComboDefinition {
   id: string;
   sequence: ComboInput[];
   maxTimeWindow: number;
