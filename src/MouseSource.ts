@@ -26,6 +26,7 @@ export class MouseSource implements InputSource {
   private buttons: boolean[] = [false, false, false];
   private throttledMouseMove: (event: MouseEvent) => void;
   private debouncedMouseMove: (event: MouseEvent) => void;
+  public onMouseDown: ((event: MouseEvent) => void) | null = null;
 
   /**
    * Creates a new MouseSource instance.
@@ -127,6 +128,9 @@ export class MouseSource implements InputSource {
   private handleMouseDown = (event: MouseEvent): void => {
     if (event.button >= 0 && event.button < 3) {
       this.buttons[event.button] = true;
+    }
+    if (this.onMouseDown) {
+      this.onMouseDown(event);
     }
   };
 

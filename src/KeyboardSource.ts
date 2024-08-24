@@ -3,6 +3,7 @@ import { InputSource } from './InputSource';
 export class KeyboardSource implements InputSource {
   private pressedKeys: Set<string> = new Set();
   private isInitialized = false;
+  public onKeyDown: ((event: KeyboardEvent) => void) | null = null;
 
   initialize(): void {
     if (!this.isInitialized) {
@@ -28,6 +29,9 @@ export class KeyboardSource implements InputSource {
 
   private handleKeyDown = (event: KeyboardEvent): void => {
     this.pressedKeys.add(event.code);
+    if (this.onKeyDown) {
+      this.onKeyDown(event);
+    }
   }
 
   private handleKeyUp = (event: KeyboardEvent): void => {
