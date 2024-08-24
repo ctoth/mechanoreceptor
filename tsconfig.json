@@ -9,11 +9,12 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "declaration": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "types": ["jest", "@playwright/test"]
   },
-  "include": ["src/**/*", "e2e/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "e2e/**/*"]
 }
