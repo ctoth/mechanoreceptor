@@ -4,7 +4,7 @@ import { MouseSource } from './MouseSource';
 import { GamepadSource } from './GamepadSource';
 import { TouchSource } from './TouchSource';
 import { ComboSystem, ComboDefinition } from './ComboSystem';
-import { InputBuffer } from '../InputBuffer';
+import { InputBuffer } from './InputBuffer';
 export class InputMapper {
   private mappingManager: MappingConfigManager;
   private keyboardSource: KeyboardSource;
