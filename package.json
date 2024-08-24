@@ -4,7 +4,7 @@
   "description": "Translate user input into signals your game can understand",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "vitest",
     "test:e2e": "npm run build && node server.js & playwright test",
     "test:all": "npm run test && npm run test:e2e",
     "build": "tsc --outDir dist",
