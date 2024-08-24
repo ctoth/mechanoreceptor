@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { InputMapper, KeyboardSource, MouseSource, GamepadSource, TouchSource, MappingConfigManager } from '../src';
-
-let inputMapper: InputMapper;
 
 test.describe('InputMapper E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:3000/test.html');
     await page.waitForFunction(() => (window as any).mechanoreceptorReady === true);
 
-    // Initialize InputMapper
+    page.on('console', msg => {
+      console.log(`Browser console ${msg.type()}: ${msg.text()}`);
+    });
+
     await page.evaluate(() => {
       const mappingManager = new window.Mechanoreceptor.MappingConfigManager();
       const keyboardSource = new window.Mechanoreceptor.KeyboardSource();
@@ -24,13 +24,11 @@ test.describe('InputMapper E2E Tests', () => {
         touchSource
       );
 
-      // Initialize input sources
       keyboardSource.initialize();
       mouseSource.initialize();
       gamepadSource.initialize();
       touchSource.initialize();
 
-      // Load test mappings
       const testMappings = [
         { contextId: 'game', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
         { contextId: 'game', actionId: 'shoot', inputType: 'mouse', inputCode: 0 },
@@ -39,135 +37,86 @@ test.describe('InputMapper E2E Tests', () => {
       ];
       mappingManager.loadMappings(JSON.stringify(testMappings));
 
-      // Set initial context
       window.inputMapper.setContext('game');
 
       console.log('InputMapper initialized with mappings:', testMappings);
       console.log('Initial InputMapper state:', window.inputMapper);
-
-      // Override the update method to log inputs
-      const originalUpdate = window.inputMapper.update;
-      window.inputMapper.update = function() {
-        console.log('Updating InputMapper');
-        originalUpdate.call(this);
-        console.log('Current keyboard state:', this.keyboardSource.getPressedKeys());
-        console.log('Current mouse state:', this.mouseSource.getPressedButtons());
-      };
-
-      // Override the mapInput method to log mapped actions
-      const originalMapInput = window.inputMapper.mapInput;
-      window.inputMapper.mapInput = function() {
-        console.log('Mapping inputs');
-        const actions = originalMapInput.call(this);
-        console.log('Mapped actions:', actions);
-        return actions;
-      };
     });
-  });
-
-  test('Keyboard input mapping in game context - Space key (second test)', async ({ page }) => {
-    await page.keyboard.press('Space');
-    await page.waitForTimeout(100); // Add a small delay
-    const triggeredActions = await page.evaluate(() => {
-      console.log('Current context:', window.inputMapper.getCurrentContext());
-      console.log('Before update');
-      window.inputMapper.update();
-      console.log('After update, before mapInput');
-      const actions = window.inputMapper.mapInput();
-      console.log('After mapInput');
-      console.log('Triggered actions:', actions);
-      return actions;
-    });
-    console.log('Triggered actions in test:', triggeredActions);
-    
-    // Additional logging
-    const keyboardState = await page.evaluate(() => window.inputMapper.keyboardSource.getPressedKeys());
-    console.log('Keyboard state after test:', keyboardState);
-    
-    expect(triggeredActions).toContain('jump');
-  });
-
-  test('Keyboard input mapping in game context', async ({ page }) => {
-    await page.keyboard.press('Space');
-    await page.waitForTimeout(100); // Add a small delay
-    const triggeredActions = await page.evaluate(() => {
-      console.log('Before update');
-      window.inputMapper.update();
-      console.log('After update, before mapInput');
-      const actions = window.inputMapper.mapInput();
-      console.log('After mapInput');
-      console.log('Triggered actions:', actions);
-      return actions;
-    });
-    expect(triggeredActions).toContain('jump');
   });
 
   test('Keyboard input mapping in game context - Space key', async ({ page }) => {
     await page.keyboard.press('Space');
-    await page.waitForTimeout(100); // Add a small delay
-    const triggeredActions = await page.evaluate(() => {
+    await page.waitForTimeout(100);
+
+    const result = await page.evaluate(() => {
       window.inputMapper.update();
-      const actions = window.inputMapper.mapInput();
-      console.log('Triggered actions:', actions);
-      return actions;
+      return {
+        actions: window.inputMapper.mapInput(),
+        keyboardState: window.inputMapper.keyboardSource.getPressedKeys(),
+        context: window.inputMapper.getCurrentContext()
+      };
     });
-    expect(triggeredActions).toContain('jump');
+
+    console.log('Test result:', result);
+
+    expect(result.actions).toContain('jump');
+    expect(result.keyboardState).toContain('Space');
+    expect(result.context).toBe('game');
   });
 
   test('Mouse input mapping in game context', async ({ page }) => {
     await page.mouse.click(100, 100);
-    await page.waitForTimeout(100); // Add a small delay
-    const triggeredActions = await page.evaluate(() => {
+    await page.waitForTimeout(100);
+
+    const result = await page.evaluate(() => {
       window.inputMapper.update();
-      const actions = window.inputMapper.mapInput();
-      console.log('Triggered actions:', actions);
-      return actions;
+      return {
+        actions: window.inputMapper.mapInput(),
+        mouseState: window.inputMapper.mouseSource.getPressedButtons(),
+        context: window.inputMapper.getCurrentContext()
+      };
     });
-    expect(triggeredActions).toContain('shoot');
+
+    console.log('Test result:', result);
+
+    expect(result.actions).toContain('shoot');
+    expect(result.mouseState[0]).toBe(true);
+    expect(result.context).toBe('game');
   });
 
   test('Context switching', async ({ page }) => {
-    // Switch to menu context
-    await page.evaluate(() => {
-      window.inputMapper.setContext('menu');
-    });
+    await page.evaluate(() => window.inputMapper.setContext('menu'));
 
-    // Test menu context mapping
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(100); // Add a small delay
-    let triggeredActions = await page.evaluate(() => {
-      window.inputMapper.update();
-      const actions = window.inputMapper.mapInput();
-      console.log('Triggered actions:', actions);
-      return actions;
-    });
-    expect(triggeredActions).toContain('select');
+    await page.waitForTimeout(100);
 
-    // Test that game context mapping no longer works
+    let result = await page.evaluate(() => {
+      window.inputMapper.update();
+      return {
+        actions: window.inputMapper.mapInput(),
+        context: window.inputMapper.getCurrentContext()
+      };
+    });
+
+    console.log('Menu context test result:', result);
+
+    expect(result.actions).toContain('select');
+    expect(result.context).toBe('menu');
+
     await page.keyboard.press('Space');
-    await page.waitForTimeout(100); // Add a small delay
-    triggeredActions = await page.evaluate(() => {
-      window.inputMapper.update();
-      const actions = window.inputMapper.mapInput();
-      console.log('Triggered actions:', actions);
-      return actions;
-    });
-    expect(triggeredActions).not.toContain('jump');
-  });
+    await page.waitForTimeout(100);
 
-  test('Multiple inputs in single frame', async ({ page }) => {
-    await page.keyboard.press('Space');
-    await page.mouse.click(100, 100);
-    await page.waitForTimeout(100); // Add a small delay
-    const triggeredActions = await page.evaluate(() => {
+    result = await page.evaluate(() => {
       window.inputMapper.update();
-      const actions = window.inputMapper.mapInput();
-      console.log('Triggered actions:', actions);
-      return actions;
+      return {
+        actions: window.inputMapper.mapInput(),
+        context: window.inputMapper.getCurrentContext()
+      };
     });
-    expect(triggeredActions).toContain('jump');
-    expect(triggeredActions).toContain('shoot');
-  });
 
-  // Add more tests here as needed
+    console.log('Menu context with game input test result:', result);
+
+    expect(result.actions).not.toContain('jump');
+    expect(result.context).toBe('menu');
+  });
 });
