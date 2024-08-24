@@ -1,17 +1,12 @@
-import { KeyboardSource } from './KeyboardSource';
-import { MouseSource } from './MouseSource';
-import { TouchSource } from './TouchSource';
-import { GamepadSource } from './GamepadSource';
-import { MappingConfigManager } from './InputMapping';
-import { InputMapper } from './InputMapper';
+export { KeyboardSource } from './KeyboardSource';
+export { MouseSource } from './MouseSource';
+export { TouchSource } from './TouchSource';
+export { GamepadSource } from './GamepadSource';
+export { MappingConfigManager } from './InputMapping';
+export { InputMapper } from './InputMapper';
+export { ComboSystem } from './ComboSystem';
+export { InputBuffer } from './InputBuffer';
 
-const Mechanoreceptor = {
-  KeyboardSource,
-  MouseSource,
-  TouchSource,
-  GamepadSource,
-  MappingConfigManager,
-  InputMapper
-};
-
+// You can still keep the default export if needed
+import * as Mechanoreceptor from './index';
 export default Mechanoreceptor;
