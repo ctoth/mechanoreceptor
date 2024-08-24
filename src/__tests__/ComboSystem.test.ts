@@ -59,7 +59,7 @@ describe('ComboSystem', () => {
   });
 
   test('checkCombos respects the maxTimeWindow', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     const combo: ComboDefinition = {
       id: 'timedCombo',
