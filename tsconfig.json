@@ -12,6 +12,6 @@
     "declaration": true,
     "moduleResolution": "node"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "e2e/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
