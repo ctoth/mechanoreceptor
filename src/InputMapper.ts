@@ -229,21 +229,23 @@ export class InputMapper {
    * you ensure that your game consistently responds to player inputs with minimal latency.
    */
   mapInput(): string[] {
-    const mappings = this.mappingManager.getMappingsForContext(this.currentContext);
+    const mappings = this.mappingManager.getMappingsForContext(
+      this.currentContext
+    );
     const triggeredActions: string[] = [];
 
-    console.log('Current context:', this.currentContext);
-    console.log('Available mappings:', mappings);
+    console.log("Current context:", this.currentContext);
+    console.log("Available mappings:", mappings);
 
     for (const mapping of mappings) {
-      console.log('Checking mapping:', mapping);
+      console.log("Checking mapping:", mapping);
       const isActive = this.isInputActive(mapping);
-      console.log('Is input active:', isActive);
+      console.log("Is input active:", isActive);
       if (isActive) {
         triggeredActions.push(mapping.actionId);
         this.inputBuffer.addInput(mapping.actionId);
 
-        console.log('Triggered action:', mapping.actionId);
+        console.log("Triggered action:", mapping.actionId);
 
         // Check for combos
         const comboInput = {
@@ -254,12 +256,12 @@ export class InputMapper {
         triggeredActions.push(...triggeredCombos);
         triggeredCombos.forEach((combo) => {
           this.inputBuffer.addInput(combo);
-          console.log('Triggered combo:', combo);
+          console.log("Triggered combo:", combo);
         });
       }
     }
 
-    console.log('All triggered actions:', triggeredActions);
+    console.log("All triggered actions:", triggeredActions);
     return triggeredActions;
   }
 
@@ -271,45 +273,52 @@ export class InputMapper {
         return this.mouseSource.isButtonPressed(mapping.inputCode as number);
       case "gamepad": {
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        return this.gamepadSource.isButtonPressed(gamepadIndex, mapping.inputCode as number);
+        return this.gamepadSource.isButtonPressed(
+          gamepadIndex,
+          mapping.inputCode as number
+        );
       }
       case "touch":
         return this.touchSource.isTouching();
       default:
-        console.log('Unknown input type:', mapping.inputType);
+        console.log("Unknown input type:", mapping.inputType);
         return false;
     }
   }
 
   private isInputActive(mapping: InputMapping): boolean {
-    const isActive = this.getInputState(mapping);
-    console.log(`Input active for ${mapping.inputType} ${mapping.inputCode}: ${isActive}`);
-    return isActive;
-  }
-
-  private isInputActive(mapping: InputMapping): boolean {
-    console.log('Checking input active for:', mapping);
+    console.log("Checking input active for:", mapping);
     switch (mapping.inputType) {
-      case "keyboard":
-        const isKeyPressed = this.keyboardSource.isKeyPressed(mapping.inputCode as string);
-        console.log('Keyboard input active:', isKeyPressed);
+      case "keyboard": {
+        const isKeyPressed = this.keyboardSource.isKeyPressed(
+          mapping.inputCode as string
+        );
+        console.log("Keyboard input active:", isKeyPressed);
         return isKeyPressed;
-      case "mouse":
-        const isMousePressed = this.mouseSource.isButtonPressed(mapping.inputCode as number);
-        console.log('Mouse input active:', isMousePressed);
+      }
+      case "mouse": {
+        const isMousePressed = this.mouseSource.isButtonPressed(
+          mapping.inputCode as number
+        );
+        console.log("Mouse input active:", isMousePressed);
         return isMousePressed;
+      }
       case "gamepad": {
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        const isGamepadPressed = this.gamepadSource.isButtonPressed(gamepadIndex, mapping.inputCode as number);
-        console.log('Gamepad input active:', isGamepadPressed);
+        const isGamepadPressed = this.gamepadSource.isButtonPressed(
+          gamepadIndex,
+          mapping.inputCode as number
+        );
+        console.log("Gamepad input active:", isGamepadPressed);
         return isGamepadPressed;
       }
-      case "touch":
+      case "touch": {
         const isTouching = this.touchSource.isTouching();
-        console.log('Touch input active:', isTouching);
+        console.log("Touch input active:", isTouching);
         return isTouching;
+      }
       default:
-        console.log('Unknown input type:', mapping.inputType);
+        console.log("Unknown input type:", mapping.inputType);
         return false;
     }
   }
