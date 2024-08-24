@@ -50,7 +50,7 @@ test.describe('InputMapper E2E Tests', () => {
       window.inputMapper.update = function() {
         console.log('Updating InputMapper');
         originalUpdate.call(this);
-        console.log('Current inputs:', this.getCurrentInputs());
+        console.log('Current inputs:', 'Unable to get current inputs');
       };
 
       // Override the mapInput method to log mapped actions
@@ -68,7 +68,7 @@ test.describe('InputMapper E2E Tests', () => {
     await page.keyboard.press('Space');
     await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
-      console.log('Current context:', window.inputMapper.getCurrentContext());
+      console.log('Current context:', window.inputMapper.currentContext);
       console.log('Before update');
       window.inputMapper.update();
       console.log('After update, before mapInput');
