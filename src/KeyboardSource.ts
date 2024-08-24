@@ -4,8 +4,11 @@ export class KeyboardSource implements InputSource {
   private pressedKeys: Set<string> = new Set();
 
   initialize(): void {
-    window.addEventListener('keydown', this.handleKeyDown);
-    window.addEventListener('keyup', this.handleKeyUp);
+    if (!this.isInitialized) {
+      window.addEventListener('keydown', this.handleKeyDown);
+      window.addEventListener('keyup', this.handleKeyUp);
+      this.isInitialized = true;
+    }
   }
 
   update(): void {
@@ -14,8 +17,12 @@ export class KeyboardSource implements InputSource {
   }
 
   dispose(): void {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('keyup', this.handleKeyUp);
+    if (this.isInitialized) {
+      window.removeEventListener('keydown', this.handleKeyDown);
+      window.removeEventListener('keyup', this.handleKeyUp);
+      this.isInitialized = false;
+      this.pressedKeys.clear();
+    }
   }
 
   private handleKeyDown = (event: KeyboardEvent): void => {

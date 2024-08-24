@@ -88,15 +88,6 @@
  - Implement an adjustable input buffer to handle timing-sensitive inputs
  - Provide options to configure buffer size and duration
 
- ### 5.3 Macro Recording and Playback
- - Create functionality to record sequences of inputs
- - Allow playback of recorded macros
-
- ### 5.4 Accessibility Features
- - Implement alternative input methods (e.g., voice commands using Web Speech API)
- - Provide options for input assistance (auto-aim, movement aids)
- - Ensure compatibility with screen readers and keyboard-only navigation
-
  ## 6. Performance Optimization
 
  ### 6.1 Efficient Event Handling

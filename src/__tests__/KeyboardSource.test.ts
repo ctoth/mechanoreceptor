@@ -15,60 +15,96 @@ describe('KeyboardSource', () => {
     jest.restoreAllMocks();
   });
 
-  test('initialize adds event listeners', () => {
-    keyboardSource.initialize();
-    expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
-    expect(addEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
-    expect(addEventListenerSpy).toHaveBeenCalledWith('keyup', expect.any(Function));
+  describe('initialization and disposal', () => {
+    test('initialize adds event listeners', () => {
+      keyboardSource.initialize();
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
+      expect(addEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+      expect(addEventListenerSpy).toHaveBeenCalledWith('keyup', expect.any(Function));
+    });
+
+    test('dispose removes event listeners', () => {
+      keyboardSource.initialize();
+      keyboardSource.dispose();
+      expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('keyup', expect.any(Function));
+    });
+
+    test('multiple initializations do not add duplicate listeners', () => {
+      keyboardSource.initialize();
+      keyboardSource.initialize();
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
+    });
   });
 
-  test('dispose removes event listeners', () => {
-    keyboardSource.initialize();
-    keyboardSource.dispose();
-    expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('keyup', expect.any(Function));
+  describe('key press tracking', () => {
+    beforeEach(() => {
+      keyboardSource.initialize();
+    });
+
+    test('isKeyPressed returns true for pressed keys', () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
+    });
+
+    test('isKeyPressed returns false for released keys', () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+    });
+
+    test('isKeyPressed returns false for keys that were never pressed', () => {
+      expect(keyboardSource.isKeyPressed('KeyZ')).toBe(false);
+    });
+
+    test('multiple key presses are tracked correctly', () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
+      expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
+    });
+
+    test('key release only affects the released key', () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
+      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+      expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
+    });
+
+    test('repeated keydown events do not affect the state', () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+    });
   });
 
-  test('isKeyPressed returns true for pressed keys', () => {
-    keyboardSource.initialize();
-    const keyDownEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
-    window.dispatchEvent(keyDownEvent);
-    expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
+  describe('update method', () => {
+    test('update method does not throw error', () => {
+      expect(() => keyboardSource.update()).not.toThrow();
+    });
+
+    test('update method does not change key states', () => {
+      keyboardSource.initialize();
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      keyboardSource.update();
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
+    });
   });
 
-  test('isKeyPressed returns false for released keys', () => {
-    keyboardSource.initialize();
-    const keyDownEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
-    const keyUpEvent = new KeyboardEvent('keyup', { code: 'KeyA' });
-    window.dispatchEvent(keyDownEvent);
-    window.dispatchEvent(keyUpEvent);
-    expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
-  });
+  describe('edge cases', () => {
+    test('dispose without initialize does not throw', () => {
+      expect(() => keyboardSource.dispose()).not.toThrow();
+    });
 
-  test('update method does not throw error', () => {
-    expect(() => keyboardSource.update()).not.toThrow();
-  });
-
-  test('multiple key presses are tracked correctly', () => {
-    keyboardSource.initialize();
-    const keyDownEventA = new KeyboardEvent('keydown', { code: 'KeyA' });
-    const keyDownEventB = new KeyboardEvent('keydown', { code: 'KeyB' });
-    window.dispatchEvent(keyDownEventA);
-    window.dispatchEvent(keyDownEventB);
-    expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
-    expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
-  });
-
-  test('key release only affects the released key', () => {
-    keyboardSource.initialize();
-    const keyDownEventA = new KeyboardEvent('keydown', { code: 'KeyA' });
-    const keyDownEventB = new KeyboardEvent('keydown', { code: 'KeyB' });
-    const keyUpEventA = new KeyboardEvent('keyup', { code: 'KeyA' });
-    window.dispatchEvent(keyDownEventA);
-    window.dispatchEvent(keyDownEventB);
-    window.dispatchEvent(keyUpEventA);
-    expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
-    expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
+    test('isKeyPressed works correctly after re-initialization', () => {
+      keyboardSource.initialize();
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      keyboardSource.dispose();
+      keyboardSource.initialize();
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+    });
   });
 });

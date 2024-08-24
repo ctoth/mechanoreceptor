@@ -3,8 +3,8 @@ import { KeyboardSource } from './KeyboardSource';
 import { MouseSource } from './MouseSource';
 import { GamepadSource } from './GamepadSource';
 import { TouchSource } from './TouchSource';
-import { ComboSystem } from './ComboSystem';
-
+import { ComboSystem, ComboDefinition } from './ComboSystem';
+import { InputBuffer } from './InputBuffer';
 export class InputMapper {
   private mappingManager: MappingConfigManager;
   private keyboardSource: KeyboardSource;
@@ -12,6 +12,7 @@ export class InputMapper {
   private gamepadSource: GamepadSource;
   private touchSource: TouchSource;
   private comboSystem: ComboSystem;
+  private inputBuffer: InputBuffer;
   private currentContext: string = 'default';
 
   constructor(
@@ -19,7 +20,9 @@ export class InputMapper {
     keyboardSource: KeyboardSource,
     mouseSource: MouseSource,
     gamepadSource: GamepadSource,
-    touchSource: TouchSource
+    touchSource: TouchSource,
+    bufferSize: number = 10,
+    bufferDuration: number = 100
   ) {
     this.mappingManager = mappingManager;
     this.keyboardSource = keyboardSource;
@@ -27,6 +30,7 @@ export class InputMapper {
     this.gamepadSource = gamepadSource;
     this.touchSource = touchSource;
     this.comboSystem = new ComboSystem();
+    this.inputBuffer = new InputBuffer(bufferSize, bufferDuration);
   }
 
   setContext(contextId: string): void {
@@ -40,6 +44,7 @@ export class InputMapper {
     for (const mapping of mappings) {
       if (this.isInputActive(mapping)) {
         triggeredActions.push(mapping.actionId);
+        this.inputBuffer.addInput(mapping.actionId);
         
         // Check for combos
         const comboInput = {
@@ -48,10 +53,29 @@ export class InputMapper {
         };
         const triggeredCombos = this.comboSystem.checkCombos(comboInput);
         triggeredActions.push(...triggeredCombos);
+        triggeredCombos.forEach(combo => {
+          this.inputBuffer.addInput(combo);
+        });
       }
     }
 
     return triggeredActions;
+  }
+
+  getRecentInputs(duration?: number): string[] {
+    return this.inputBuffer.getRecentInputs(duration);
+  }
+
+  clearInputBuffer(): void {
+    this.inputBuffer.clear();
+  }
+
+  setInputBufferSize(size: number): void {
+    this.inputBuffer.setBufferSize(size);
+  }
+
+  setInputBufferDuration(duration: number): void {
+    this.inputBuffer.setBufferDuration(duration);
   }
 
   private isInputActive(mapping: InputMapping): boolean {
@@ -79,4 +103,5 @@ export class InputMapper {
   removeCombo(comboId: string): void {
     this.comboSystem.removeCombo(comboId);
   }
+
 }
