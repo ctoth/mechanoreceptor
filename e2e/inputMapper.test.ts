@@ -30,7 +30,7 @@ test.describe('InputMapper E2E Tests', () => {
       gamepadSource.initialize();
       touchSource.initialize();
 
-      // Load some test mappings
+      // Load test mappings
       const testMappings = [
         { contextId: 'game', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
         { contextId: 'game', actionId: 'shoot', inputType: 'mouse', inputCode: 0 },
@@ -41,23 +41,31 @@ test.describe('InputMapper E2E Tests', () => {
 
       // Set initial context
       window.inputMapper.setContext('game');
+
+      console.log('InputMapper initialized with mappings:', testMappings);
     });
   });
 
   test('Keyboard input mapping in game context', async ({ page }) => {
     await page.keyboard.press('Space');
+    await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Triggered actions:', actions);
+      return actions;
     });
     expect(triggeredActions).toContain('jump');
   });
 
   test('Mouse input mapping in game context', async ({ page }) => {
     await page.mouse.click(100, 100);
+    await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Triggered actions:', actions);
+      return actions;
     });
     expect(triggeredActions).toContain('shoot');
   });
@@ -70,17 +78,23 @@ test.describe('InputMapper E2E Tests', () => {
 
     // Test menu context mapping
     await page.keyboard.press('Enter');
+    await page.waitForTimeout(100); // Add a small delay
     let triggeredActions = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Triggered actions:', actions);
+      return actions;
     });
     expect(triggeredActions).toContain('select');
 
     // Test that game context mapping no longer works
     await page.keyboard.press('Space');
+    await page.waitForTimeout(100); // Add a small delay
     triggeredActions = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Triggered actions:', actions);
+      return actions;
     });
     expect(triggeredActions).not.toContain('jump');
   });
@@ -88,9 +102,12 @@ test.describe('InputMapper E2E Tests', () => {
   test('Multiple inputs in single frame', async ({ page }) => {
     await page.keyboard.press('Space');
     await page.mouse.click(100, 100);
+    await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Triggered actions:', actions);
+      return actions;
     });
     expect(triggeredActions).toContain('jump');
     expect(triggeredActions).toContain('shoot');

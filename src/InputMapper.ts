@@ -229,15 +229,18 @@ export class InputMapper {
    * you ensure that your game consistently responds to player inputs with minimal latency.
    */
   mapInput(): string[] {
-    const mappings = this.mappingManager.getMappingsForContext(
-      this.currentContext
-    );
+    const mappings = this.mappingManager.getMappingsForContext(this.currentContext);
     const triggeredActions: string[] = [];
+
+    console.log('Current context:', this.currentContext);
+    console.log('Available mappings:', mappings);
 
     for (const mapping of mappings) {
       if (this.isInputActive(mapping)) {
         triggeredActions.push(mapping.actionId);
         this.inputBuffer.addInput(mapping.actionId);
+
+        console.log('Triggered action:', mapping.actionId);
 
         // Check for combos
         const comboInput = {
@@ -248,10 +251,12 @@ export class InputMapper {
         triggeredActions.push(...triggeredCombos);
         triggeredCombos.forEach((combo) => {
           this.inputBuffer.addInput(combo);
+          console.log('Triggered combo:', combo);
         });
       }
     }
 
+    console.log('All triggered actions:', triggeredActions);
     return triggeredActions;
   }
 
