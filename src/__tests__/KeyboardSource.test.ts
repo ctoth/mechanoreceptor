@@ -11,8 +11,10 @@ describe('KeyboardSource', () => {
     mockWindow = {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
     };
     global.window = mockWindow as any;
+    global.KeyboardEvent = vi.fn() as any;
     keyboardSource = new KeyboardSource();
     addEventListenerSpy = vi.spyOn(mockWindow, 'addEventListener');
     removeEventListenerSpy = vi.spyOn(mockWindow, 'removeEventListener');
@@ -21,10 +23,7 @@ describe('KeyboardSource', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     delete (global as any).window;
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    delete (global as any).KeyboardEvent;
   });
 
   describe('initialization and disposal', () => {
@@ -56,13 +55,13 @@ describe('KeyboardSource', () => {
     });
 
     test('isKeyPressed returns true for pressed keys', () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
     });
 
     test('isKeyPressed returns false for released keys', () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
     });
 
@@ -71,24 +70,24 @@ describe('KeyboardSource', () => {
     });
 
     test('multiple key presses are tracked correctly', () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
       expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
     });
 
     test('key release only affects the released key', () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
-      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
       expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
     });
 
     test('repeated keydown events do not affect the state', () => {
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
     });
   });
@@ -100,7 +99,7 @@ describe('KeyboardSource', () => {
 
     test('update method does not change key states', () => {
       keyboardSource.initialize();
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
       keyboardSource.update();
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
     });
@@ -113,7 +112,7 @@ describe('KeyboardSource', () => {
 
     test('isKeyPressed works correctly after re-initialization', () => {
       keyboardSource.initialize();
-      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
       keyboardSource.dispose();
       keyboardSource.initialize();
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);

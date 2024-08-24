@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import path from "path";
 
 const TEST_HTML_URL = "http://localhost:8080/public/test.html";
 

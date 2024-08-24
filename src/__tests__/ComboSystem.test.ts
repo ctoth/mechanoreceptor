@@ -78,7 +78,7 @@ describe('ComboSystem', () => {
 
     expect(comboSystem.checkCombos({ inputType: 'keyboard', inputCode: 'KeyB' })).toEqual([]);
 
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   test('checkCombos handles multiple combos', () => {

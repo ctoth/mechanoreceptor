@@ -1,3 +1,4 @@
+import { describe, beforeEach, afterEach, expect, test, vi } from 'vitest';
 import { InputMapper } from '../InputMapper';
 import { MappingConfigManager } from '../InputMapping';
 import { KeyboardSource } from '../KeyboardSource';
@@ -6,11 +7,11 @@ import { GamepadSource } from '../GamepadSource';
 import { TouchSource } from '../TouchSource';
 import { ComboSystem } from '../ComboSystem';
 
-jest.mock('../KeyboardSource');
-jest.mock('../MouseSource');
-jest.mock('../GamepadSource');
-jest.mock('../TouchSource');
-jest.mock('../ComboSystem');
+vi.mock('../KeyboardSource');
+vi.mock('../MouseSource');
+vi.mock('../GamepadSource');
+vi.mock('../TouchSource');
+vi.mock('../ComboSystem');
 
 describe('InputMapper', () => {
   let inputMapper: InputMapper;
