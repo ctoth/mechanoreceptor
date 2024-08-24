@@ -6,5 +6,6 @@
   "excludeProtected": true,
   "excludeExternals": true,
   "theme": "default",
-  "readme": "README.md"
+  "readme": "README.md",
+  "exclude": ["**/__tests__/**/*"]
 }
