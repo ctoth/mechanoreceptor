@@ -1,15 +1,26 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { KeyboardSource } from '../KeyboardSource';
+import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 describe('KeyboardSource', () => {
   let keyboardSource: KeyboardSource;
   let addEventListenerSpy: any;
   let removeEventListenerSpy: any;
+  let mockWindow: any;
 
   beforeEach(() => {
+    mockWindow = {
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    };
+    global.window = mockWindow as any;
     keyboardSource = new KeyboardSource();
-    addEventListenerSpy = vi.spyOn(window, 'addEventListener');
-    removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    addEventListenerSpy = vi.spyOn(mockWindow, 'addEventListener');
+    removeEventListenerSpy = vi.spyOn(mockWindow, 'removeEventListener');
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    delete (global as any).window;
   });
 
   afterEach(() => {
