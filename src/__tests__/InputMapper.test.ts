@@ -1,22 +1,22 @@
-import { describe, beforeEach, afterEach, expect, test, vi } from 'vitest';
-import { InputMapper } from '../InputMapper';
-import { MappingConfigManager } from '../InputMapping';
-import { KeyboardSource } from '../KeyboardSource';
-import { MouseSource } from '../MouseSource';
-import { GamepadSource } from '../GamepadSource';
-import { TouchSource } from '../TouchSource';
-import { ComboSystem } from '../ComboSystem';
+import { describe, beforeEach, afterEach, expect, test, mock } from "vitest";
+import { InputMapper } from "../InputMapper";
+import { MappingConfigManager } from "../InputMapping";
+import { KeyboardSource } from "../KeyboardSource";
+import { MouseSource } from "../MouseSource";
+import { GamepadSource } from "../GamepadSource";
+import { TouchSource } from "../TouchSource";
+import { ComboSystem } from "../ComboSystem";
 
-vi.mock('../KeyboardSource');
-vi.mock('../MouseSource');
-vi.mock('../GamepadSource');
-vi.mock('../TouchSource');
-vi.mock('../ComboSystem');
+mock("../KeyboardSource");
+mock("../MouseSource");
+mock("../GamepadSource");
+vi.mock("../TouchSource");
+vi.mock("../ComboSystem");
 
-describe('InputMapper', () => {
+describe("InputMapper", () => {
   let inputMapper: InputMapper;
   let mappingManager: MappingConfigManager;
-  let keyboardSource: jest.Mocked<KeyboardSource>;
+  let keyboardSource: vi.Mocked<KeyboardSource>;
   let mouseSource: jest.Mocked<MouseSource>;
   let gamepadSource: jest.Mocked<GamepadSource>;
   let touchSource: jest.Mocked<TouchSource>;
@@ -42,56 +42,87 @@ describe('InputMapper', () => {
     (ComboSystem as jest.Mock).mockImplementation(() => comboSystem);
   });
 
-  test('setContext changes the current context', () => {
-    inputMapper.setContext('menu');
-    expect((inputMapper as any).currentContext).toBe('menu');
+  test("setContext changes the current context", () => {
+    inputMapper.setContext("menu");
+    expect((inputMapper as any).currentContext).toBe("menu");
   });
 
-  test('mapInput returns correct actions for keyboard input', () => {
+  test("mapInput returns correct actions for keyboard input", () => {
     const mappings = [
-      { contextId: 'default', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
-      { contextId: 'default', actionId: 'move_left', inputType: 'keyboard', inputCode: 'ArrowLeft' },
+      {
+        contextId: "default",
+        actionId: "jump",
+        inputType: "keyboard",
+        inputCode: "Space",
+      },
+      {
+        contextId: "default",
+        actionId: "move_left",
+        inputType: "keyboard",
+        inputCode: "ArrowLeft",
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    keyboardSource.isKeyPressed.mockImplementation((key: string) => key === 'Space');
+    keyboardSource.isKeyPressed.mockImplementation(
+      (key: string) => key === "Space"
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     const actions = inputMapper.mapInput();
-    expect(actions).toContain('jump');
-    expect(actions).not.toContain('move_left');
+    expect(actions).toContain("jump");
+    expect(actions).not.toContain("move_left");
   });
 
-  test('mapInput returns correct actions for mouse input', () => {
+  test("mapInput returns correct actions for mouse input", () => {
     const mappings = [
-      { contextId: 'default', actionId: 'shoot', inputType: 'mouse', inputCode: 0 },
+      {
+        contextId: "default",
+        actionId: "shoot",
+        inputType: "mouse",
+        inputCode: 0,
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    mouseSource.isButtonPressed.mockImplementation((button: number) => button === 0);
+    mouseSource.isButtonPressed.mockImplementation(
+      (button: number) => button === 0
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     const actions = inputMapper.mapInput();
-    expect(actions).toContain('shoot');
+    expect(actions).toContain("shoot");
   });
 
-  test('mapInput returns correct actions for gamepad input', () => {
+  test("mapInput returns correct actions for gamepad input", () => {
     const mappings = [
-      { contextId: 'default', actionId: 'accelerate', inputType: 'gamepad', inputCode: 7 },
+      {
+        contextId: "default",
+        actionId: "accelerate",
+        inputType: "gamepad",
+        inputCode: 7,
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
     gamepadSource.getConnectedGamepads.mockReturnValue([0]);
-    gamepadSource.isButtonPressed.mockImplementation((index: number, button: number) => index === 0 && button === 7);
+    gamepadSource.isButtonPressed.mockImplementation(
+      (index: number, button: number) => index === 0 && button === 7
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     const actions = inputMapper.mapInput();
-    expect(actions).toContain('accelerate');
+    expect(actions).toContain("accelerate");
   });
 
-  test('mapInput returns correct actions for touch input', () => {
+  test("mapInput returns correct actions for touch input", () => {
     const mappings = [
-      { contextId: 'default', actionId: 'tap', inputType: 'touch', inputCode: 'any' },
+      {
+        contextId: "default",
+        actionId: "tap",
+        inputType: "touch",
+        inputCode: "any",
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
@@ -99,24 +130,31 @@ describe('InputMapper', () => {
     comboSystem.checkCombos.mockReturnValue([]);
 
     const actions = inputMapper.mapInput();
-    expect(actions).toContain('tap');
+    expect(actions).toContain("tap");
   });
 
-  test('mapInput handles combos correctly', () => {
+  test("mapInput handles combos correctly", () => {
     const mappings = [
-      { contextId: 'default', actionId: 'punch', inputType: 'keyboard', inputCode: 'KeyP' },
+      {
+        contextId: "default",
+        actionId: "punch",
+        inputType: "keyboard",
+        inputCode: "KeyP",
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    keyboardSource.isKeyPressed.mockImplementation((key: string) => key === 'KeyP');
-    comboSystem.checkCombos.mockReturnValue(['super_punch']);
+    keyboardSource.isKeyPressed.mockImplementation(
+      (key: string) => key === "KeyP"
+    );
+    comboSystem.checkCombos.mockReturnValue(["super_punch"]);
 
     const actions = inputMapper.mapInput();
-    expect(actions).toContain('punch');
-    expect(actions).toContain('super_punch');
+    expect(actions).toContain("punch");
+    expect(actions).toContain("super_punch");
   });
 
-  test('getRecentInputs returns correct inputs', () => {
+  test("getRecentInputs returns correct inputs", () => {
     const inputMapper = new InputMapper(
       mappingManager,
       keyboardSource,
@@ -129,23 +167,37 @@ describe('InputMapper', () => {
 
     // Simulate some inputs
     const mappings = [
-      { contextId: 'default', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
-      { contextId: 'default', actionId: 'shoot', inputType: 'mouse', inputCode: 0 },
+      {
+        contextId: "default",
+        actionId: "jump",
+        inputType: "keyboard",
+        inputCode: "Space",
+      },
+      {
+        contextId: "default",
+        actionId: "shoot",
+        inputType: "mouse",
+        inputCode: 0,
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    keyboardSource.isKeyPressed.mockImplementation((key: string) => key === 'Space');
-    mouseSource.isButtonPressed.mockImplementation((button: number) => button === 0);
+    keyboardSource.isKeyPressed.mockImplementation(
+      (key: string) => key === "Space"
+    );
+    mouseSource.isButtonPressed.mockImplementation(
+      (button: number) => button === 0
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     inputMapper.mapInput(); // This should add 'jump' and 'shoot' to the buffer
 
     const recentInputs = inputMapper.getRecentInputs();
-    expect(recentInputs).toContain('jump');
-    expect(recentInputs).toContain('shoot');
+    expect(recentInputs).toContain("jump");
+    expect(recentInputs).toContain("shoot");
   });
 
-  test('clearInputBuffer clears the input buffer', () => {
+  test("clearInputBuffer clears the input buffer", () => {
     const inputMapper = new InputMapper(
       mappingManager,
       keyboardSource,
@@ -158,11 +210,18 @@ describe('InputMapper', () => {
 
     // Simulate some inputs
     const mappings = [
-      { contextId: 'default', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
+      {
+        contextId: "default",
+        actionId: "jump",
+        inputType: "keyboard",
+        inputCode: "Space",
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    keyboardSource.isKeyPressed.mockImplementation((key: string) => key === 'Space');
+    keyboardSource.isKeyPressed.mockImplementation(
+      (key: string) => key === "Space"
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     inputMapper.mapInput(); // This should add 'jump' to the buffer
@@ -173,7 +232,7 @@ describe('InputMapper', () => {
     expect(recentInputs).toHaveLength(0);
   });
 
-  test('setInputBufferSize changes the buffer size', () => {
+  test("setInputBufferSize changes the buffer size", () => {
     const inputMapper = new InputMapper(
       mappingManager,
       keyboardSource,
@@ -188,24 +247,48 @@ describe('InputMapper', () => {
 
     // Simulate some inputs
     const mappings = [
-      { contextId: 'default', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
-      { contextId: 'default', actionId: 'shoot', inputType: 'mouse', inputCode: 0 },
-      { contextId: 'default', actionId: 'move', inputType: 'keyboard', inputCode: 'ArrowRight' },
-      { contextId: 'default', actionId: 'crouch', inputType: 'keyboard', inputCode: 'ControlLeft' },
+      {
+        contextId: "default",
+        actionId: "jump",
+        inputType: "keyboard",
+        inputCode: "Space",
+      },
+      {
+        contextId: "default",
+        actionId: "shoot",
+        inputType: "mouse",
+        inputCode: 0,
+      },
+      {
+        contextId: "default",
+        actionId: "move",
+        inputType: "keyboard",
+        inputCode: "ArrowRight",
+      },
+      {
+        contextId: "default",
+        actionId: "crouch",
+        inputType: "keyboard",
+        inputCode: "ControlLeft",
+      },
     ];
     mappingManager.loadMappings(JSON.stringify(mappings));
 
-    keyboardSource.isKeyPressed.mockImplementation((key: string) => ['Space', 'ArrowRight', 'ControlLeft'].includes(key));
-    mouseSource.isButtonPressed.mockImplementation((button: number) => button === 0);
+    keyboardSource.isKeyPressed.mockImplementation((key: string) =>
+      ["Space", "ArrowRight", "ControlLeft"].includes(key)
+    );
+    mouseSource.isButtonPressed.mockImplementation(
+      (button: number) => button === 0
+    );
     comboSystem.checkCombos.mockReturnValue([]);
 
     inputMapper.mapInput(); // This should add all 4 actions to the buffer, but only keep the last 3
 
     const recentInputs = inputMapper.getRecentInputs();
     expect(recentInputs).toHaveLength(3);
-    expect(recentInputs).not.toContain('jump');
-    expect(recentInputs).toContain('shoot');
-    expect(recentInputs).toContain('move');
-    expect(recentInputs).toContain('crouch');
+    expect(recentInputs).not.toContain("jump");
+    expect(recentInputs).toContain("shoot");
+    expect(recentInputs).toContain("move");
+    expect(recentInputs).toContain("crouch");
   });
 });
