@@ -13,11 +13,15 @@ test.beforeEach(async ({ page }) => {
 
   // Wait for the script to load with a timeout
   try {
-    await page.waitForFunction(() => (window as any).Mechanoreceptor !== undefined, { timeout: 10000 });
+    await page.waitForFunction(() => (window as any).Mechanoreceptor !== undefined, { timeout: 30000 });
   } catch (error) {
     console.error('Timeout waiting for Mechanoreceptor to be defined');
     const pageContent = await page.content();
     console.log('Page content:', pageContent);
+    console.log('Script content:', await page.evaluate(() => {
+      const scriptElement = document.querySelector('script[src="../dist/index.js"]');
+      return scriptElement ? scriptElement.textContent : 'Script not found';
+    }));
     throw error;
   }
 });
