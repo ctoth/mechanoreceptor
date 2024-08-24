@@ -8,16 +8,46 @@
 <body>
     <h1>Mechanoreceptor Test Page</h1>
     <script type="module">
-        import Mechanoreceptor from './dist/index.js';
+        import * as Mechanoreceptor from '../dist/index.js';
         window.Mechanoreceptor = Mechanoreceptor;
+        
+        // Initialize Mechanoreceptor components
+        const keyboardSource = new Mechanoreceptor.KeyboardSource();
+        const mouseSource = new Mechanoreceptor.MouseSource();
+
+        keyboardSource.initialize();
+        mouseSource.initialize();
+
+        window.lastKeyPressed = null;
+        window.lastMouseClick = null;
+
+        keyboardSource.onKeyDown = (event) => {
+            window.lastKeyPressed = event.code;
+            console.log('Key pressed:', event.code);
+        };
+
+        mouseSource.onMouseDown = (event) => {
+            window.lastMouseClick = { x: event.clientX, y: event.clientY };
+            console.log('Mouse clicked:', event.clientX, event.clientY);
+        };
+
+        function update() {
+            keyboardSource.update();
+            mouseSource.update();
+            requestAnimationFrame(update);
+        }
+
+        update();
+
+        // Expose sources for debugging
+        window.keyboardSource = keyboardSource;
+        window.mouseSource = mouseSource;
+
+        // Signal that Mechanoreceptor is ready
+        window.mechanoreceptorReady = true;
     </script>
     <script>
-        // Wait for the script to load
-        window.onload = () => {
-            if (typeof Mechanoreceptor === 'undefined') {
-                console.error('Mechanoreceptor is not defined');
-                return;
-            }
+        // This script is no longer needed as we've moved the initialization into the module script
             const keyboardSource = new Mechanoreceptor.KeyboardSource();
             const mouseSource = new Mechanoreceptor.MouseSource();
 

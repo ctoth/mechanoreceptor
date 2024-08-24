@@ -13,29 +13,13 @@ test.describe("Input tests", () => {
 
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
-        await page.waitForFunction(
-          () => (window as any).Mechanoreceptor !== undefined,
-          { timeout: 30000 }
-        );
+        await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 30000 });
       } catch (error) {
-        console.error("Timeout waiting for Mechanoreceptor to be defined");
+        console.error("Timeout waiting for Mechanoreceptor to be ready");
         await test.step("Debug information", async () => {
           console.log("Page content:", await page.content());
-          console.log(
-            "Script content:",
-            await page.evaluate(() => {
-              const scriptElement = document.querySelector(
-                'script[src="../dist/index.js"]'
-              );
-              return scriptElement
-                ? scriptElement.textContent
-                : "Script not found";
-            })
-          );
-          console.log(
-            "Window object:",
-            await page.evaluate(() => Object.keys(window))
-          );
+          console.log("Window object:", await page.evaluate(() => Object.keys(window)));
+          console.log("Mechanoreceptor object:", await page.evaluate(() => (window as any).Mechanoreceptor));
         });
         throw error;
       }
