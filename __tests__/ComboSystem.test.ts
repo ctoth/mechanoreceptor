@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach } from 'vitest';
 import { ComboSystem } from '../src/ComboSystem';
 
 describe('ComboSystem', () => {
