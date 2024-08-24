@@ -2,7 +2,7 @@ import { InputSource } from './InputSource';
 
 export class KeyboardSource implements InputSource {
   private pressedKeys: Set<string> = new Set();
-  private isInitialized: boolean = false;
+  private isInitialized = false;
 
   initialize(): void {
     if (!this.isInitialized) {
