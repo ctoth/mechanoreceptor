@@ -4,6 +4,7 @@
   "description": "Translate user input into signals your game can understand",
   "main": "dist/index.js",
   "scripts": {
+    "serve": "http-server   -p 3000 public",
     "test": "jest",
     "test:e2e": "playwright test",
     "test:all": "npm run test && npm run test:e2e",
@@ -29,14 +30,16 @@
   "homepage": "https://github.com/ctoth/mechanoreceptor#readme",
   "devDependencies": {
     "@playwright/test": "^1.32.0",
-    "@types/jest": "^29.5.0",
+    "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "eslint": "^8.37.0",
-    "jest": "^29.5.0",
-    "jest-environment-jsdom": "^29.5.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^2.8.7",
-    "ts-jest": "^29.0.5",
-    "typescript": "^4.9.5"
+    "ts-jest": "^29.2.5",
+    "typescript": "^4.9.5",
+    "wait-on": "^8.0.0"
   }
 }
