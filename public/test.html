@@ -15,13 +15,24 @@
         keyboardSource.initialize();
         mouseSource.initialize();
 
-        window.addEventListener('keydown', (event) => {
-            window.lastKeyPressed = event.code;
-        });
+        window.lastKeyPressed = null;
+        window.lastMouseClick = null;
 
-        window.addEventListener('click', (event) => {
+        keyboardSource.onKeyDown = (event) => {
+            window.lastKeyPressed = event.code;
+        };
+
+        mouseSource.onMouseDown = (event) => {
             window.lastMouseClick = { x: event.clientX, y: event.clientY };
-        });
+        };
+
+        function update() {
+            keyboardSource.update();
+            mouseSource.update();
+            requestAnimationFrame(update);
+        }
+
+        update();
     </script>
 </body>
 </html>
