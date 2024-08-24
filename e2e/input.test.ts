@@ -4,7 +4,7 @@ const TEST_HTML_URL = "http://localhost:3000/test.html";
 
 test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
-    test.setTimeout(60000); // Increase timeout to 60 seconds
+    // Removed increased timeout
     const logs: string[] = [];
     page.on("console", (msg) => {
       console.log("Browser console:", msg.text());
@@ -24,7 +24,7 @@ test.describe("Input tests", () => {
       try {
         await page.waitForFunction(
           () => (window as any).mechanoreceptorReady === true || (window as any).mechanoreceptorError,
-          { timeout: 30000 }
+          { timeout: 10000 }
         );
         const error = await page.evaluate(() => (window as any).mechanoreceptorError);
         if (error) {

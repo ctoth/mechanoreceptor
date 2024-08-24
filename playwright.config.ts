@@ -2,7 +2,7 @@ import { PlaywrightTestConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const config: PlaywrightTestConfig = {
-  timeout: 60000, // Set global timeout to 60 seconds
+  timeout: 30000, // Set global timeout to 30 seconds
   testDir: './e2e',
   use: {
     headless: true,
@@ -29,7 +29,7 @@ const config: PlaywrightTestConfig = {
     command: 'npm run dev',
     port: 3000,
     reuseExistingServer: !process.env.CI,
-    timeout: 120000, // Increase timeout to 2 minutes
+    timeout: 60000, // Set timeout to 1 minute
   },
 };
 
