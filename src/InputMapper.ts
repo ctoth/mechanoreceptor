@@ -290,6 +290,33 @@ export class InputMapper {
     }
   }
 
+  private isInputActive(mapping: InputMapping): boolean {
+    console.log('Checking input active for:', mapping);
+    switch (mapping.inputType) {
+      case "keyboard":
+        const isKeyPressed = this.keyboardSource.isKeyPressed(mapping.inputCode as string);
+        console.log('Keyboard input active:', isKeyPressed);
+        return isKeyPressed;
+      case "mouse":
+        const isMousePressed = this.mouseSource.isButtonPressed(mapping.inputCode as number);
+        console.log('Mouse input active:', isMousePressed);
+        return isMousePressed;
+      case "gamepad": {
+        const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
+        const isGamepadPressed = this.gamepadSource.isButtonPressed(gamepadIndex, mapping.inputCode as number);
+        console.log('Gamepad input active:', isGamepadPressed);
+        return isGamepadPressed;
+      }
+      case "touch":
+        const isTouching = this.touchSource.isTouching();
+        console.log('Touch input active:', isTouching);
+        return isTouching;
+      default:
+        console.log('Unknown input type:', mapping.inputType);
+        return false;
+    }
+  }
+
   /**
    * Retrieves recent inputs from the input buffer.
    *
