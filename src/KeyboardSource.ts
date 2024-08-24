@@ -41,4 +41,8 @@ export class KeyboardSource implements InputSource {
   isKeyPressed(keyCode: string): boolean {
     return this.pressedKeys.has(keyCode);
   }
+
+  getPressedKeys(): string[] {
+    return Array.from(this.pressedKeys);
+  }
 }
