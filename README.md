@@ -1,11 +1,11 @@
-# Mechanoreceptor: Ultimate Browser-Based Game Input Library
+# Mechanoreceptor: Advanced Browser-Based Game Input Library
 
 Mechanoreceptor is a powerful and flexible TypeScript library designed to handle various input methods for browser-based games. It provides a unified interface for keyboard, mouse, touch, and gamepad inputs, making it easier for game developers to create responsive and intuitive controls for their games.
 
 ## Features
 
 - Support for multiple input sources: keyboard, mouse, touch, and gamepad
-- Flexible input mapping system
+- Flexible input mapping system with context-based configurations
 - Combo detection for complex input sequences
 - Input buffering for timing-sensitive inputs
 - Easy integration with existing game engines and frameworks
@@ -30,16 +30,23 @@ yarn add mechanoreceptor
 Here's a quick example of how to use Mechanoreceptor in your project:
 
 ```typescript
-import Mechanoreceptor from 'mechanoreceptor';
+import {
+  KeyboardSource,
+  MouseSource,
+  TouchSource,
+  GamepadSource,
+  MappingConfigManager,
+  InputMapper
+} from 'mechanoreceptor';
 
 // Create instances of input sources
-const keyboardSource = new Mechanoreceptor.KeyboardSource();
-const mouseSource = new Mechanoreceptor.MouseSource();
-const touchSource = new Mechanoreceptor.TouchSource();
-const gamepadSource = new Mechanoreceptor.GamepadSource();
+const keyboardSource = new KeyboardSource();
+const mouseSource = new MouseSource();
+const touchSource = new TouchSource();
+const gamepadSource = new GamepadSource();
 
 // Create a mapping configuration manager
-const mappingManager = new Mechanoreceptor.MappingConfigManager();
+const mappingManager = new MappingConfigManager();
 
 // Load your input mappings
 const mappings = [
@@ -49,7 +56,7 @@ const mappings = [
 mappingManager.loadMappings(JSON.stringify(mappings));
 
 // Create an input mapper
-const inputMapper = new Mechanoreceptor.InputMapper(
+const inputMapper = new InputMapper(
   mappingManager,
   keyboardSource,
   mouseSource,
@@ -63,14 +70,11 @@ mouseSource.initialize();
 touchSource.initialize();
 gamepadSource.initialize();
 
+// Set the current context
+inputMapper.setContext('gameplay');
+
 // In your game loop
 function gameLoop() {
-  // Update input states
-  keyboardSource.update();
-  mouseSource.update();
-  touchSource.update();
-  gamepadSource.update();
-
   // Get triggered actions
   const actions = inputMapper.mapInput();
 
@@ -94,9 +98,45 @@ function gameLoop() {
 gameLoop();
 ```
 
+## Advanced Features
+
+### Combo System
+
+Mechanoreceptor supports complex input combinations:
+
+```typescript
+const hadoukenCombo = {
+  id: 'hadouken',
+  sequence: [
+    { inputType: 'keyboard', inputCode: 'ArrowDown' },
+    { inputType: 'keyboard', inputCode: 'ArrowRight' },
+    { inputType: 'keyboard', inputCode: 'KeyP' }
+  ],
+  maxTimeWindow: 500
+};
+
+inputMapper.addCombo(hadoukenCombo);
+```
+
+### Input Buffering
+
+You can access recent inputs for more complex game mechanics:
+
+```typescript
+const recentInputs = inputMapper.getRecentInputs(500); // Get inputs from last 500ms
+```
+
 ## Documentation
 
-For detailed documentation on how to use Mechanoreceptor, including advanced features like combo detection and input buffering, please refer to our [official documentation](https://github.com/yourusername/mechanoreceptor/wiki).
+For detailed documentation on how to use Mechanoreceptor, including all available methods and advanced features, please refer to our [official documentation](https://github.com/yourusername/mechanoreceptor/wiki).
+
+To generate the documentation, run:
+
+```bash
+npm run docs
+```
+
+This will create a `docs` folder with the generated documentation. Open `docs/index.html` in your browser to view it.
 
 ## Contributing
 
@@ -111,12 +151,3 @@ Mechanoreceptor is released under the MIT License. See the [LICENSE](LICENSE) fi
 If you encounter any issues or have questions, please file an issue on our [GitHub issue tracker](https://github.com/yourusername/mechanoreceptor/issues).
 
 Happy gaming!
-## Documentation
-
-To generate the documentation, run:
-
-```bash
-npm run docs
-```
-
-This will create a `docs` folder with the generated documentation. Open `docs/index.html` in your browser to view it.
