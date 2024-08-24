@@ -13,7 +13,7 @@
     "sourceMap": true,
     "removeComments": true,
     "noEmitOnError": true,
-    "types": ["jest", "@playwright/test"]
+    "types": ["vitest/globals", "@playwright/test"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "e2e/**/*"]
