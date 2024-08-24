@@ -194,4 +194,28 @@ export class MouseSource implements InputSource {
   isButtonPressed(button: number): boolean {
     return this.buttons[button] || false;
   }
+
+  /**
+   * Gets an array of currently pressed mouse buttons.
+   * 
+   * @returns An array of button indices that are currently pressed.
+   * 
+   * @example
+   * ```typescript
+   * const mouseSource = new MouseSource();
+   * mouseSource.initialize();
+   * 
+   * // Later in your game loop or event handler
+   * const pressedButtons = mouseSource.getPressedButtons();
+   * console.log('Pressed buttons:', pressedButtons);
+   * ```
+   */
+  getPressedButtons(): number[] {
+    return this.buttons.reduce((pressed, isPressed, index) => {
+      if (isPressed) {
+        pressed.push(index);
+      }
+      return pressed;
+    }, [] as number[]);
+  }
 }
