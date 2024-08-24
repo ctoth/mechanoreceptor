@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { ComboSystem, ComboDefinition } from '../ComboSystem';
 
 describe('ComboSystem', () => {
