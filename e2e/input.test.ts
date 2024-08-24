@@ -14,10 +14,16 @@ test.describe('Input tests', () => {
     await page.keyboard.press('A');
     await page.waitForTimeout(100);
 
-    const result = await page.evaluate(() => ({
-      lastKeyPressed: (window as any).lastKeyPressed,
-      keyboardState: (window as any).inputMapper.keyboardSource.getPressedKeys()
-    }));
+    const result = await page.evaluate(() => {
+      if (!(window as any).inputMapper) {
+        console.error('inputMapper is not defined');
+        return { lastKeyPressed: null, keyboardState: null };
+      }
+      return {
+        lastKeyPressed: (window as any).lastKeyPressed,
+        keyboardState: (window as any).inputMapper.keyboardSource.getPressedKeys()
+      };
+    });
 
     console.log('Keyboard test result:', result);
 
@@ -29,10 +35,16 @@ test.describe('Input tests', () => {
     await page.mouse.click(100, 100);
     await page.waitForTimeout(100);
 
-    const result = await page.evaluate(() => ({
-      lastMouseClick: (window as any).lastMouseClick,
-      mouseState: (window as any).inputMapper.mouseSource.getPressedButtons()
-    }));
+    const result = await page.evaluate(() => {
+      if (!(window as any).inputMapper) {
+        console.error('inputMapper is not defined');
+        return { lastMouseClick: null, mouseState: null };
+      }
+      return {
+        lastMouseClick: (window as any).lastMouseClick,
+        mouseState: (window as any).inputMapper.mouseSource.getPressedButtons()
+      };
+    });
 
     console.log('Mouse test result:', result);
 

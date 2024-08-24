@@ -49,12 +49,16 @@ test.describe('InputMapper E2E Tests', () => {
     await page.waitForTimeout(100);
 
     const result = await page.evaluate(() => {
+      if (!window.inputMapper) {
+        console.error('inputMapper is not defined');
+        return { actions: [], keyboardState: [], context: null };
+      }
       window.inputMapper.update();
-      return {
-        actions: window.inputMapper.mapInput(),
-        keyboardState: window.inputMapper.keyboardSource.getPressedKeys(),
-        context: window.inputMapper.getCurrentContext()
-      };
+      const actions = window.inputMapper.mapInput();
+      const keyboardState = window.inputMapper.keyboardSource.getPressedKeys();
+      const context = window.inputMapper.getCurrentContext();
+      console.log('InputMapper state:', { actions, keyboardState, context });
+      return { actions, keyboardState, context };
     });
 
     console.log('Test result:', result);

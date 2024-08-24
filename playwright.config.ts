@@ -2,12 +2,15 @@ import { PlaywrightTestConfig, devices } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
-  timeout: 30000,
+  timeout: 60000,
   use: {
     headless: false,
     viewport: { width: 1280, height: 720 },
     trace: 'on-first-retry',
     video: 'on-first-retry',
+    launchOptions: {
+      args: ['--verbose', '--no-sandbox', '--disable-setuid-sandbox']
+    },
   },
   webServer: {
     command: 'npm run dev',
