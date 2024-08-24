@@ -155,6 +155,6 @@
  - Publish the library on npm
  - Provide a CDN link for direct browser inclusion
 
- ### 11.3 Build Process
+ ### 11.2 Build Process
  - Use Rollup or Webpack for bundling
  - Provide both minified and non-minified builds
