@@ -4,10 +4,19 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/public/test.html');
   await page.waitForLoadState('domcontentloaded');
 
-  // Wait for the script to load
-  await page.waitForFunction(() => (window as any).Mechanoreceptor !== undefined);
+  // Add more debugging
+  page.on('console', msg => console.log('Browser console:', msg.text()));
+  page.on('pageerror', err => console.error('Browser page error:', err));
 
-  page.on('console', msg => console.log(msg.text()));
+  // Wait for the script to load with a timeout
+  try {
+    await page.waitForFunction(() => (window as any).Mechanoreceptor !== undefined, { timeout: 10000 });
+  } catch (error) {
+    console.error('Timeout waiting for Mechanoreceptor to be defined');
+    const pageContent = await page.content();
+    console.log('Page content:', pageContent);
+    throw error;
+  }
 });
 
 test('Keyboard input test', async ({ page }) => {

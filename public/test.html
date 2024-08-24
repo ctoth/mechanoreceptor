@@ -9,11 +9,17 @@
     <h1>Mechanoreceptor Test Page</h1>
     <script src="../dist/index.js"></script>
     <script>
-        const keyboardSource = new Mechanoreceptor.KeyboardSource();
-        const mouseSource = new Mechanoreceptor.MouseSource();
+        // Wait for the script to load
+        window.onload = () => {
+            if (typeof Mechanoreceptor === 'undefined') {
+                console.error('Mechanoreceptor is not defined');
+                return;
+            }
+            const keyboardSource = new Mechanoreceptor.KeyboardSource();
+            const mouseSource = new Mechanoreceptor.MouseSource();
 
-        keyboardSource.initialize();
-        mouseSource.initialize();
+            keyboardSource.initialize();
+            mouseSource.initialize();
 
         window.lastKeyPressed = null;
         window.lastMouseClick = null;

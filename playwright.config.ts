@@ -10,13 +10,13 @@ const config: PlaywrightTestConfig = {
     slowMo: 50,
   },
   webServer: {
-    command: 'npx http-server . -p 3000',
-    port: 3000,
+    command: 'npx http-server . -p 3001',
+    port: 3001,
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3001',
   },
   projects: [
     {
