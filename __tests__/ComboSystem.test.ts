@@ -1,4 +1,4 @@
-import { ComboSystem } from '../ComboSystem';
+import { ComboSystem } from '../src/ComboSystem';
 
 describe('ComboSystem', () => {
   let comboSystem: ComboSystem;
