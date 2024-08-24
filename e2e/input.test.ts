@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const TEST_HTML_URL = "/test.html";
+const TEST_HTML_URL = "/";
 
 test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
