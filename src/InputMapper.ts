@@ -5,6 +5,14 @@ import { GamepadSource } from './GamepadSource';
 import { TouchSource } from './TouchSource';
 import { ComboSystem, ComboDefinition } from './ComboSystem';
 import { InputBuffer } from './InputBuffer';
+import { InputMapping, MappingConfigManager } from './InputMapping';
+import { KeyboardSource } from './KeyboardSource';
+import { MouseSource } from './MouseSource';
+import { GamepadSource } from './GamepadSource';
+import { TouchSource } from './TouchSource';
+import { ComboSystem, ComboDefinition } from './ComboSystem';
+import { InputBuffer } from './InputBuffer';
+
 export class InputMapper {
   private mappingManager: MappingConfigManager;
   private keyboardSource: KeyboardSource;
@@ -63,7 +71,7 @@ export class InputMapper {
   }
 
   getRecentInputs(duration?: number): string[] {
-    return this.inputBuffer.getRecentInputs(duration).map(item => item.input);
+    return this.inputBuffer.getRecentInputs(duration);
   }
 
   clearInputBuffer(): void {
@@ -96,12 +104,11 @@ export class InputMapper {
     }
   }
 
-  addCombo(combo: { id: string, sequence: { inputType: 'keyboard' | 'mouse' | 'gamepad' | 'touch', inputCode: string | number }[], maxTimeWindow: number }): void {
-    this.comboSystem.addCombo(combo as ComboDefinition);
+  addCombo(combo: ComboDefinition): void {
+    this.comboSystem.addCombo(combo);
   }
 
   removeCombo(comboId: string): void {
     this.comboSystem.removeCombo(comboId);
   }
-
 }
