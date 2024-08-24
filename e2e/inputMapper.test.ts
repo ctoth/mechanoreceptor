@@ -43,11 +43,24 @@ test.describe('InputMapper E2E Tests', () => {
       window.inputMapper.setContext('game');
 
       console.log('InputMapper initialized with mappings:', testMappings);
-    });
-
-    // Log the initial state
-    await page.evaluate(() => {
       console.log('Initial InputMapper state:', window.inputMapper);
+
+      // Override the update method to log inputs
+      const originalUpdate = window.inputMapper.update;
+      window.inputMapper.update = function() {
+        console.log('Updating InputMapper');
+        originalUpdate.call(this);
+        console.log('Current inputs:', this.getCurrentInputs());
+      };
+
+      // Override the mapInput method to log mapped actions
+      const originalMapInput = window.inputMapper.mapInput;
+      window.inputMapper.mapInput = function() {
+        console.log('Mapping inputs');
+        const actions = originalMapInput.call(this);
+        console.log('Mapped actions:', actions);
+        return actions;
+      };
     });
   });
 
@@ -55,6 +68,7 @@ test.describe('InputMapper E2E Tests', () => {
     await page.keyboard.press('Space');
     await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
+      console.log('Current context:', window.inputMapper.getCurrentContext());
       console.log('Before update');
       window.inputMapper.update();
       console.log('After update, before mapInput');
