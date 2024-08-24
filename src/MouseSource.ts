@@ -1,5 +1,5 @@
-import { InputSource } from './InputSource';
-import { throttle, debounce } from '../utils/throttleDebounce';
+import { InputSource } from "./InputSource";
+import { throttle, debounce } from "./utils/throttleDebounce";
 
 /**
  * Represents a mouse input source for the Mechanoreceptor library.
@@ -25,9 +25,9 @@ export class MouseSource implements InputSource {
    * Initializes the mouse input source by setting up event listeners.
    */
   initialize(): void {
-    window.addEventListener('mousemove', this.handleMouseMove);
-    window.addEventListener('mousedown', this.handleMouseDown);
-    window.addEventListener('mouseup', this.handleMouseUp);
+    window.addEventListener("mousemove", this.handleMouseMove);
+    window.addEventListener("mousedown", this.handleMouseDown);
+    window.addEventListener("mouseup", this.handleMouseUp);
   }
 
   /**
@@ -42,9 +42,9 @@ export class MouseSource implements InputSource {
    * Disposes of the mouse input source by removing event listeners.
    */
   dispose(): void {
-    window.removeEventListener('mousemove', this.handleMouseMove);
-    window.removeEventListener('mousedown', this.handleMouseDown);
-    window.removeEventListener('mouseup', this.handleMouseUp);
+    window.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("mousedown", this.handleMouseDown);
+    window.removeEventListener("mouseup", this.handleMouseUp);
   }
 
   /**
@@ -54,7 +54,7 @@ export class MouseSource implements InputSource {
   private handleMouseMove = (event: MouseEvent): void => {
     this.throttledMouseMove(event);
     this.debouncedMouseMove(event);
-  }
+  };
 
   /**
    * Updates the stored mouse position.
@@ -63,7 +63,7 @@ export class MouseSource implements InputSource {
   private updatePosition = (event: MouseEvent): void => {
     this.position.x = event.clientX;
     this.position.y = event.clientY;
-  }
+  };
 
   /**
    * Handles the mouse down event by updating the button state.
@@ -73,7 +73,7 @@ export class MouseSource implements InputSource {
     if (event.button >= 0 && event.button < 3) {
       this.buttons[event.button] = true;
     }
-  }
+  };
 
   /**
    * Handles the mouse up event by updating the button state.
@@ -83,7 +83,7 @@ export class MouseSource implements InputSource {
     if (event.button >= 0 && event.button < 3) {
       this.buttons[event.button] = false;
     }
-  }
+  };
 
   /**
    * Gets the current mouse position.
