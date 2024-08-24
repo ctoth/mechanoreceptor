@@ -1,4 +1,4 @@
-import { describe, beforeEach, afterEach, expect, test, mock } from "vitest";
+import { describe, beforeEach, afterEach, expect, test, vi } from "vitest";
 import { InputMapper } from "../InputMapper";
 import { MappingConfigManager } from "../InputMapping";
 import { KeyboardSource } from "../KeyboardSource";
@@ -7,9 +7,9 @@ import { GamepadSource } from "../GamepadSource";
 import { TouchSource } from "../TouchSource";
 import { ComboSystem } from "../ComboSystem";
 
-mock("../KeyboardSource");
-mock("../MouseSource");
-mock("../GamepadSource");
+vi.mock("../KeyboardSource");
+vi.mock("../MouseSource");
+vi.mock("../GamepadSource");
 vi.mock("../TouchSource");
 vi.mock("../ComboSystem");
 
@@ -17,18 +17,18 @@ describe("InputMapper", () => {
   let inputMapper: InputMapper;
   let mappingManager: MappingConfigManager;
   let keyboardSource: vi.Mocked<KeyboardSource>;
-  let mouseSource: jest.Mocked<MouseSource>;
-  let gamepadSource: jest.Mocked<GamepadSource>;
-  let touchSource: jest.Mocked<TouchSource>;
-  let comboSystem: jest.Mocked<ComboSystem>;
+  let mouseSource: vi.Mocked<MouseSource>;
+  let gamepadSource: vi.Mocked<GamepadSource>;
+  let touchSource: vi.Mocked<TouchSource>;
+  let comboSystem: vi.Mocked<ComboSystem>;
 
   beforeEach(() => {
     mappingManager = new MappingConfigManager();
-    keyboardSource = new KeyboardSource() as jest.Mocked<KeyboardSource>;
-    mouseSource = new MouseSource() as jest.Mocked<MouseSource>;
-    gamepadSource = new GamepadSource() as jest.Mocked<GamepadSource>;
-    touchSource = new TouchSource() as jest.Mocked<TouchSource>;
-    comboSystem = new ComboSystem() as jest.Mocked<ComboSystem>;
+    keyboardSource = new KeyboardSource() as vi.Mocked<KeyboardSource>;
+    mouseSource = new MouseSource() as vi.Mocked<MouseSource>;
+    gamepadSource = new GamepadSource() as vi.Mocked<GamepadSource>;
+    touchSource = new TouchSource() as vi.Mocked<TouchSource>;
+    comboSystem = new ComboSystem() as vi.Mocked<ComboSystem>;
 
     inputMapper = new InputMapper(
       mappingManager,
@@ -39,7 +39,7 @@ describe("InputMapper", () => {
     );
 
     // Mock the ComboSystem constructor
-    (ComboSystem as jest.Mock).mockImplementation(() => comboSystem);
+    (ComboSystem as unknown as vi.Mock).mockImplementation(() => comboSystem);
   });
 
   test("setContext changes the current context", () => {
