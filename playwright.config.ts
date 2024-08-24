@@ -3,10 +3,11 @@ import { PlaywrightTestConfig } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
   use: {
-    headless: true,
+    headless: false,
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
     video: 'on-first-retry',
+    slowMo: 50,
   },
   projects: [
     {
