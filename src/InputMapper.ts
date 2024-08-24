@@ -273,6 +273,42 @@ export class InputMapper {
     return triggeredActions;
   }
 
+  private isInputActive(mapping: InputMapping): boolean {
+    console.log("Checking input active for:", mapping);
+    const inputState = this.getInputState(mapping);
+    console.log("Input state:", inputState);
+    return inputState;
+  }
+
+  private getInputState(mapping: InputMapping): boolean {
+    switch (mapping.inputType) {
+      case "keyboard":
+        const keyState = this.keyboardSource.isKeyPressed(mapping.inputCode as string);
+        console.log("Keyboard state for", mapping.inputCode, ":", keyState);
+        return keyState;
+      case "mouse":
+        const mouseState = this.mouseSource.isButtonPressed(mapping.inputCode as number);
+        console.log("Mouse state for button", mapping.inputCode, ":", mouseState);
+        return mouseState;
+      case "gamepad": {
+        const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
+        const gamepadState = this.gamepadSource.isButtonPressed(
+          gamepadIndex,
+          mapping.inputCode as number
+        );
+        console.log("Gamepad state for button", mapping.inputCode, ":", gamepadState);
+        return gamepadState;
+      }
+      case "touch":
+        const touchState = this.touchSource.isTouching();
+        console.log("Touch state:", touchState);
+        return touchState;
+      default:
+        console.log("Unknown input type:", mapping.inputType);
+        return false;
+    }
+  }
+
   private getInputState(mapping: InputMapping): boolean {
     switch (mapping.inputType) {
       case "keyboard":

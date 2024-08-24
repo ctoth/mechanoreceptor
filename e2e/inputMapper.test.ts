@@ -50,7 +50,8 @@ test.describe('InputMapper E2E Tests', () => {
       window.inputMapper.update = function() {
         console.log('Updating InputMapper');
         originalUpdate.call(this);
-        console.log('Current inputs:', 'Unable to get current inputs');
+        console.log('Current keyboard state:', this.keyboardSource.getPressedKeys());
+        console.log('Current mouse state:', this.mouseSource.getPressedButtons());
       };
 
       // Override the mapInput method to log mapped actions
@@ -78,6 +79,11 @@ test.describe('InputMapper E2E Tests', () => {
       return actions;
     });
     console.log('Triggered actions in test:', triggeredActions);
+    
+    // Additional logging
+    const keyboardState = await page.evaluate(() => window.inputMapper.keyboardSource.getPressedKeys());
+    console.log('Keyboard state after test:', keyboardState);
+    
     expect(triggeredActions).toContain('jump');
   });
 
