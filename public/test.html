@@ -46,39 +46,5 @@
         // Signal that Mechanoreceptor is ready
         window.mechanoreceptorReady = true;
     </script>
-    <script>
-        // This script is no longer needed as we've moved the initialization into the module script
-            const keyboardSource = new Mechanoreceptor.KeyboardSource();
-            const mouseSource = new Mechanoreceptor.MouseSource();
-
-            keyboardSource.initialize();
-            mouseSource.initialize();
-
-        window.lastKeyPressed = null;
-        window.lastMouseClick = null;
-
-        keyboardSource.onKeyDown = (event) => {
-            window.lastKeyPressed = event.code;
-            console.log('Key pressed:', event.code);
-        };
-
-        mouseSource.onMouseDown = (event) => {
-            window.lastMouseClick = { x: event.clientX, y: event.clientY };
-            console.log('Mouse clicked:', event.clientX, event.clientY);
-        };
-
-        function update() {
-            keyboardSource.update();
-            mouseSource.update();
-            requestAnimationFrame(update);
-        }
-
-        update();
-
-        // Expose sources for debugging
-        window.keyboardSource = keyboardSource;
-        window.mouseSource = mouseSource;
-    };
-    </script>
 </body>
 </html>

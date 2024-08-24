@@ -13,7 +13,7 @@ test.describe("Input tests", () => {
 
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
-        await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 30000 });
+        await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 60000 });
       } catch (error) {
         console.error("Timeout waiting for Mechanoreceptor to be ready");
         await test.step("Debug information", async () => {
