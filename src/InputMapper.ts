@@ -91,6 +91,14 @@ export class InputMapper {
   private currentContext = "default";
 
   /**
+   * Gets the current input context.
+   * @returns The current context ID.
+   */
+  getCurrentContext(): string {
+    return this.currentContext;
+  }
+
+  /**
    * Creates a new InputMapper instance.
    *
    * @param mappingManager - The MappingConfigManager instance for handling input mappings.

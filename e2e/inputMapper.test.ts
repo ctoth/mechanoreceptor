@@ -68,7 +68,7 @@ test.describe('InputMapper E2E Tests', () => {
     await page.keyboard.press('Space');
     await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
-      console.log('Current context:', window.inputMapper.currentContext);
+      console.log('Current context:', window.inputMapper.getCurrentContext());
       console.log('Before update');
       window.inputMapper.update();
       console.log('After update, before mapInput');
