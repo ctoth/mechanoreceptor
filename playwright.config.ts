@@ -10,6 +10,7 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
+    baseURL: 'http://localhost:3000',
   },
   projects: [
     {
@@ -25,6 +26,11 @@ const config: PlaywrightTestConfig = {
       use: { browserName: 'webkit' },
     },
   ],
+  webServer: {
+    command: 'npm run dev',
+    port: 3000,
+    reuseExistingServer: !process.env.CI,
+  },
 };
 
 export default config;
