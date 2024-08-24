@@ -74,7 +74,7 @@ describe('ComboSystem', () => {
 
     comboSystem.checkCombos({ inputType: 'keyboard', inputCode: 'KeyA' });
     
-    jest.advanceTimersByTime(600); // Advance time beyond the maxTimeWindow
+    vi.advanceTimersByTime(600); // Advance time beyond the maxTimeWindow
 
     expect(comboSystem.checkCombos({ inputType: 'keyboard', inputCode: 'KeyB' })).toEqual([]);
 

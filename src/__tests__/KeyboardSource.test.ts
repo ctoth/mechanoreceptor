@@ -1,5 +1,5 @@
 import { KeyboardSource } from '../KeyboardSource';
-import { vi, describe, beforeEach, afterEach, expect } from 'vitest';
+import { vi, describe, beforeEach, afterEach, expect, test } from 'vitest';
 
 describe('KeyboardSource', () => {
   let keyboardSource: KeyboardSource;
