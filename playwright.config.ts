@@ -1,4 +1,5 @@
 import { PlaywrightTestConfig, devices } from '@playwright/test';
+import path from 'path';
 
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
@@ -8,15 +9,6 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
     video: 'on-first-retry',
     slowMo: 50,
-  },
-  webServer: {
-    command: 'npx http-server . -p 3001',
-    port: 3001,
-    timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
-  use: {
-    baseURL: 'http://localhost:3001',
   },
   projects: [
     {

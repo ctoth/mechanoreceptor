@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
+import path from 'path';
+
+const TEST_HTML_PATH = path.join(__dirname, '..', 'public', 'test.html');
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/public/test.html');
+  await page.goto(`file://${TEST_HTML_PATH}`);
   await page.waitForLoadState('domcontentloaded');
 
   // Add more debugging
