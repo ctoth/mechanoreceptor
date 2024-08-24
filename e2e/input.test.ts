@@ -8,18 +8,24 @@ test.describe("Input tests", () => {
     await page.goto(`file://${TEST_HTML_PATH}`);
     await page.waitForLoadState("domcontentloaded");
 
-    page.on("console", (msg) => console.log("Browser console:", msg.text()));
+    const logs: string[] = [];
+    page.on("console", (msg) => {
+      console.log("Browser console:", msg.text());
+      logs.push(msg.text());
+    });
     page.on("pageerror", (err) => console.error("Browser page error:", err));
 
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
-        await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 60000 });
+        await page.waitForFunction(() => (window as any).mechanoreceptorReady === true, { timeout: 10000 });
       } catch (error) {
         console.error("Timeout waiting for Mechanoreceptor to be ready");
+        console.log("Captured logs:", logs.join('\n'));
         await test.step("Debug information", async () => {
           console.log("Page content:", await page.content());
           console.log("Window object:", await page.evaluate(() => Object.keys(window)));
           console.log("Mechanoreceptor object:", await page.evaluate(() => (window as any).Mechanoreceptor));
+          console.log("Script errors:", await page.evaluate(() => (window as any).scriptErrors));
         });
         throw error;
       }
