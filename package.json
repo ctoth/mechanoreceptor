@@ -9,7 +9,8 @@
     "test:all": "npm run test && npm run test:e2e",
     "build": "tsc --outDir dist",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "docs": "typedoc --out docs src"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,7 @@
   },
   "homepage": "https://github.com/ctoth/mechanoreceptor#readme",
   "devDependencies": {
-    "@playwright/test": "^1.32.0",
+    "@playwright/test": "^1.46.1",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
@@ -38,6 +39,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^2.8.7",
     "ts-jest": "^29.2.5",
+    "typedoc": "^0.26.6",
     "typescript": "^4.9.5",
     "wait-on": "^8.0.0"
   }
