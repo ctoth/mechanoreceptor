@@ -14,8 +14,4 @@ const Mechanoreceptor = {
   InputMapper
 };
 
-if (typeof window !== 'undefined') {
-  (window as any).Mechanoreceptor = Mechanoreceptor;
-}
-
 export default Mechanoreceptor;
