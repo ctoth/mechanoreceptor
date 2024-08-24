@@ -284,13 +284,22 @@ export class InputMapper {
     console.log("Checking input state for:", mapping);
     switch (mapping.inputType) {
       case "keyboard": {
-        const keyState = this.keyboardSource.isKeyPressed(mapping.inputCode as string);
+        const keyState = this.keyboardSource.isKeyPressed(
+          mapping.inputCode as string
+        );
         console.log("Keyboard state for", mapping.inputCode, ":", keyState);
         return keyState;
       }
       case "mouse": {
-        const mouseState = this.mouseSource.isButtonPressed(mapping.inputCode as number);
-        console.log("Mouse state for button", mapping.inputCode, ":", mouseState);
+        const mouseState = this.mouseSource.isButtonPressed(
+          mapping.inputCode as number
+        );
+        console.log(
+          "Mouse state for button",
+          mapping.inputCode,
+          ":",
+          mouseState
+        );
         return mouseState;
       }
       case "gamepad": {
@@ -299,7 +308,12 @@ export class InputMapper {
           gamepadIndex,
           mapping.inputCode as number
         );
-        console.log("Gamepad state for button", mapping.inputCode, ":", gamepadState);
+        console.log(
+          "Gamepad state for button",
+          mapping.inputCode,
+          ":",
+          gamepadState
+        );
         return gamepadState;
       }
       case "touch": {
@@ -453,19 +467,19 @@ export class InputMapper {
     console.log("Keyboard state:", this.keyboardSource.getPressedKeys());
     console.log("Mouse state:", this.mouseSource.getPressedButtons());
   }
-}
+
   /**
    * Logs the current input mappings for debugging purposes.
    */
-}
-
-/**
- * Logs the current input mappings for debugging purposes.
- */
-logMappings(): void {
-  const mappings = this.mappingManager.getMappingsForContext(this.currentContext);
-  console.log("Current input mappings:");
-  mappings.forEach(mapping => {
-    console.log(`Action: ${mapping.actionId}, Input: ${mapping.inputType} - ${mapping.inputCode}`);
-  });
+  logMappings(): void {
+    const mappings = this.mappingManager.getMappingsForContext(
+      this.currentContext
+    );
+    console.log("Current input mappings:");
+    mappings.forEach((mapping) => {
+      console.log(
+        `Action: ${mapping.actionId}, Input: ${mapping.inputType} - ${mapping.inputCode}`
+      );
+    });
+  }
 }
