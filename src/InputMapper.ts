@@ -63,7 +63,7 @@ export class InputMapper {
   }
 
   getRecentInputs(duration?: number): string[] {
-    return this.inputBuffer.getRecentInputs(duration);
+    return this.inputBuffer.getRecentInputs(duration).map(item => item.input);
   }
 
   clearInputBuffer(): void {

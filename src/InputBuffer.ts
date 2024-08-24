@@ -9,7 +9,7 @@ export class InputBuffer {
   }
 
   addInput(input: string): void {
-    this.buffer.push(input);
+    this.buffer.push({ input, timestamp: Date.now() });
     if (this.buffer.length > this.bufferSize) {
       this.buffer.shift();
     }
@@ -51,8 +51,12 @@ export class InputBuffer {
     }
   }
 
-  getRecentInputs(): string[] {
-    return [...this.buffer];
+  getRecentInputs(duration?: number): string[] {
+    if (duration === undefined) {
+      return [...this.buffer];
+    }
+    const currentTime = Date.now();
+    return this.buffer.filter(input => currentTime - input.timestamp <= duration);
   }
 
   clear(): void {
