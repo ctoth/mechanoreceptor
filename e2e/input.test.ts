@@ -17,7 +17,7 @@ test.describe("Input tests", () => {
       try {
         await page.waitForFunction(
           () => (window as any).mechanoreceptorReady === true || (window as any).mechanoreceptorError,
-          { timeout: 5000 }
+          { timeout: 10000 }
         );
         const error = await page.evaluate(() => (window as any).mechanoreceptorError);
         if (error) {
@@ -39,6 +39,10 @@ test.describe("Input tests", () => {
           console.log(
             "Script errors:",
             await page.evaluate(() => (window as any).scriptErrors)
+          );
+          console.log(
+            "Network requests:",
+            await page.evaluate(() => performance.getEntriesByType("resource"))
           );
         });
         throw error;

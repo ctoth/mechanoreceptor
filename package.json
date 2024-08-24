@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "test:e2e": "npm run build && playwright test",
+    "test:e2e": "npm run build && node server.js & playwright test",
     "test:all": "npm run test && npm run test:e2e",
     "build": "tsc --outDir dist",
-    "serve": "http-server -p 8080",
+    "serve": "node server.js",
     "lint": "eslint src/**/*.ts e2e/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\" \"e2e/**/*.ts\"",
     "docs": "typedoc --out docs src"

@@ -11,7 +11,7 @@
         console.log('Script started');
         try {
             console.log('Importing Mechanoreceptor');
-            const Mechanoreceptor = await import('/dist/index.js');
+            import * as Mechanoreceptor from '/dist/index.js';
             console.log('Mechanoreceptor imported successfully');
             window.Mechanoreceptor = Mechanoreceptor;
             
@@ -54,6 +54,7 @@
         } catch (error) {
             console.error('Error initializing Mechanoreceptor:', error);
             window.mechanoreceptorError = error;
+            window.scriptErrors = error;
         }
     </script>
 </body>
