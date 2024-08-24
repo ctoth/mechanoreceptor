@@ -18,6 +18,7 @@ describe('KeyboardSource', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    keyboardSource.dispose();
   });
 
   describe('initialization and disposal', () => {
@@ -44,6 +45,12 @@ describe('KeyboardSource', () => {
       keyboardSource.initialize();
       expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
     });
+
+    test('multiple disposals do not throw errors', () => {
+      keyboardSource.initialize();
+      keyboardSource.dispose();
+      expect(() => keyboardSource.dispose()).not.toThrow();
+    });
   });
 
   describe('key press tracking', () => {
@@ -69,8 +76,10 @@ describe('KeyboardSource', () => {
     test('multiple key presses are tracked correctly', () => {
       fireEvent.keyDown(window, { code: 'KeyA' });
       fireEvent.keyDown(window, { code: 'KeyB' });
+      fireEvent.keyDown(window, { code: 'KeyC' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
       expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
+      expect(keyboardSource.isKeyPressed('KeyC')).toBe(true);
     });
 
     test('key release only affects the released key', () => {
@@ -86,6 +95,11 @@ describe('KeyboardSource', () => {
       fireEvent.keyDown(window, { code: 'KeyA' });
       fireEvent.keyUp(window, { code: 'KeyA' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+    });
+
+    test('handles non-standard key codes', () => {
+      fireEvent.keyDown(window, { code: 'NonStandardKey' });
+      expect(keyboardSource.isKeyPressed('NonStandardKey')).toBe(true);
     });
   });
 
@@ -112,6 +126,14 @@ describe('KeyboardSource', () => {
       fireEvent.keyDown(window, { code: 'KeyA' });
       keyboardSource.dispose();
       keyboardSource.initialize();
+      expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
+    });
+
+    test('handles rapid key presses and releases', () => {
+      for (let i = 0; i < 100; i++) {
+        fireEvent.keyDown(window, { code: 'KeyA' });
+        fireEvent.keyUp(window, { code: 'KeyA' });
+      }
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
     });
   });
