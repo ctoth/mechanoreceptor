@@ -46,7 +46,7 @@ export class MouseSource implements InputSource {
    * const customMouseSource = new MouseSource(8, 50); // 8ms throttle, 50ms debounce
    * ```
    */
-  constructor(throttleLimit: number = 16, debounceDelay: number = 100) {
+  constructor(throttleLimit = 16, debounceDelay = 100) {
     this.throttledMouseMove = throttle(this.updatePosition, throttleLimit);
     this.debouncedMouseMove = debounce(this.updatePosition, debounceDelay);
   }

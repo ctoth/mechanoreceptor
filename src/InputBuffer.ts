@@ -20,7 +20,7 @@ export class InputBuffer {
    * @param bufferSize - The maximum number of inputs to store in the buffer. Default is 10.
    * @param bufferDuration - The maximum age (in milliseconds) of inputs to keep in the buffer. Default is 100ms.
    */
-  constructor(bufferSize: number = 10, bufferDuration: number = 100) {
+  constructor(bufferSize = 10, bufferDuration = 100) {
     this.bufferSize = bufferSize;
     this.bufferDuration = bufferDuration;
   }
