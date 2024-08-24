@@ -7,7 +7,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "npm run build && node server.js & npx playwright test e2e/**/*.test.{js,ts}",
+    "test:e2e": "playwright test e2e",
     "test:all": "npm run test && npm run test:e2e",
     "build": "tsc --outDir dist",
     "serve": "node server.js",
