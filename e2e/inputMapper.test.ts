@@ -51,7 +51,7 @@ test.describe('InputMapper E2E Tests', () => {
     });
   });
 
-  test('Keyboard input mapping in game context - Space key', async ({ page }) => {
+  test('Keyboard input mapping in game context - Space key (second test)', async ({ page }) => {
     await page.keyboard.press('Space');
     await page.waitForTimeout(100); // Add a small delay
     const triggeredActions = await page.evaluate(() => {
