@@ -1,4 +1,4 @@
-import { PlaywrightTestConfig } from '@playwright/test';
+import { PlaywrightTestConfig, devices } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
@@ -8,6 +8,12 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
     video: 'on-first-retry',
     slowMo: 50,
+  },
+  webServer: {
+    command: 'npx http-server . -p 3000',
+    port: 3000,
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
   },
   projects: [
     {
