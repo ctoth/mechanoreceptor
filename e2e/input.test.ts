@@ -22,6 +22,7 @@ test.beforeEach(async ({ page }) => {
       const scriptElement = document.querySelector('script[src="../dist/index.js"]');
       return scriptElement ? scriptElement.textContent : 'Script not found';
     }));
+    console.log('Window object:', await page.evaluate(() => Object.keys(window)));
     throw error;
   }
 });
