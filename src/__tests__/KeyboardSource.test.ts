@@ -1,18 +1,19 @@
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { KeyboardSource } from '../KeyboardSource';
 
 describe('KeyboardSource', () => {
   let keyboardSource: KeyboardSource;
-  let addEventListenerSpy: jest.SpyInstance;
-  let removeEventListenerSpy: jest.SpyInstance;
+  let addEventListenerSpy: any;
+  let removeEventListenerSpy: any;
 
   beforeEach(() => {
     keyboardSource = new KeyboardSource();
-    addEventListenerSpy = jest.spyOn(window, 'addEventListener');
-    removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+    addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+    removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('initialization and disposal', () => {
