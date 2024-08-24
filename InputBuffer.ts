@@ -1,5 +1,3 @@
-import { InputMapping } from './InputMapping';
-
 export class InputBuffer {
   private buffer: string[] = [];
   private bufferSize: number;
@@ -17,7 +15,7 @@ export class InputBuffer {
     }
   }
 
-  getRecentInputs(duration?: number): string[] {
+  getRecentInputs(): string[] {
     return this.buffer.slice();
   }
 
