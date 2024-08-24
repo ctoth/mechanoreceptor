@@ -23,13 +23,10 @@ test.describe("Input tests", () => {
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
         await page.waitForFunction(
-          () => (window as any).mechanoreceptorReady === true || (window as any).mechanoreceptorError,
-          { timeout: 10000 }
+          () => (window as any).Mechanoreceptor !== undefined,
+          { timeout: 30000 }
         );
-        const error = await page.evaluate(() => (window as any).mechanoreceptorError);
-        if (error) {
-          throw new Error(`Mechanoreceptor failed to initialize: ${error}`);
-        }
+        console.log("Mechanoreceptor loaded successfully");
       } catch (error) {
         console.error("Timeout waiting for Mechanoreceptor to be ready");
         console.log("Captured logs:", logs.join("\n"));

@@ -15,6 +15,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ['test.html', 'docs/**/*'],
+    exclude: ['docs/**/*'],
   },
+  publicDir: 'public',
 });
