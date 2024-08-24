@@ -9,19 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
-}
-{
-  "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "strict": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
     "declaration": true,
     "moduleResolution": "node"
   },
