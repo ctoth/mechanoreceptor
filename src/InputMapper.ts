@@ -362,27 +362,7 @@ export class InputMapper {
    * @returns True if the input is active, false otherwise.
    * @private
    */
-  private isInputActive(mapping: InputMapping): boolean {
-    switch (mapping.inputType) {
-      case "keyboard":
-        return this.keyboardSource.isKeyPressed(mapping.inputCode as string);
-      case "mouse":
-        return this.mouseSource.isButtonPressed(mapping.inputCode as number);
-      case "gamepad": {
-        // Assuming the first connected gamepad is used
-        const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        return this.gamepadSource.isButtonPressed(
-          gamepadIndex,
-          mapping.inputCode as number
-        );
-      }
-      case "touch":
-        // For touch, we might want to implement more complex logic
-        return this.touchSource.isTouching();
-      default:
-        return false;
-    }
-  }
+  // This method has been removed as it's a duplicate
 
   /**
    * Adds a new combo definition to the combo system.
