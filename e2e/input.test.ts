@@ -1,57 +1,77 @@
-import { test, expect } from '@playwright/test';
-import path from 'path';
+import { test, expect } from "@playwright/test";
+import path from "path";
 
-const TEST_HTML_PATH = path.join(__dirname, '..', 'public', 'test.html');
+const TEST_HTML_PATH = path.join(__dirname, "..", "public", "test.html");
 
-test.describe('Input tests', () => {
+test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`file://${TEST_HTML_PATH}`);
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState("domcontentloaded");
 
-    page.on('console', msg => console.log('Browser console:', msg.text()));
-    page.on('pageerror', err => console.error('Browser page error:', err));
+    page.on("console", (msg) => console.log("Browser console:", msg.text()));
+    page.on("pageerror", (err) => console.error("Browser page error:", err));
 
-    await test.step('Wait for Mechanoreceptor to load', async () => {
+    await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
-        await page.waitForFunction(() => (window as any).Mechanoreceptor !== undefined, { timeout: 30000 });
+        await page.waitForFunction(
+          () => (window as any).Mechanoreceptor !== undefined,
+          { timeout: 30000 }
+        );
       } catch (error) {
-        console.error('Timeout waiting for Mechanoreceptor to be defined');
-        await test.step('Debug information', async () => {
-          console.log('Page content:', await page.content());
-          console.log('Script content:', await page.evaluate(() => {
-            const scriptElement = document.querySelector('script[src="../dist/index.js"]');
-            return scriptElement ? scriptElement.textContent : 'Script not found';
-          }));
-          console.log('Window object:', await page.evaluate(() => Object.keys(window)));
+        console.error("Timeout waiting for Mechanoreceptor to be defined");
+        await test.step("Debug information", async () => {
+          console.log("Page content:", await page.content());
+          console.log(
+            "Script content:",
+            await page.evaluate(() => {
+              const scriptElement = document.querySelector(
+                'script[src="../dist/index.js"]'
+              );
+              return scriptElement
+                ? scriptElement.textContent
+                : "Script not found";
+            })
+          );
+          console.log(
+            "Window object:",
+            await page.evaluate(() => Object.keys(window))
+          );
         });
         throw error;
       }
     });
   });
 
-  test('Keyboard input test', async ({ page }) => {
-    await test.step('Check if script is loaded', async () => {
-      const scriptLoaded = await page.evaluate(() => typeof (window as any).Mechanoreceptor !== 'undefined');
+  test("Keyboard input test", async ({ page }) => {
+    await test.step("Check if script is loaded", async () => {
+      const scriptLoaded = await page.evaluate(
+        () => typeof (window as any).Mechanoreceptor !== "undefined"
+      );
       expect(scriptLoaded).toBe(true);
     });
 
-    await test.step('Simulate key press', async () => {
-      await page.keyboard.press('A');
+    await test.step("Simulate key press", async () => {
+      await page.keyboard.press("A");
     });
 
-    await test.step('Verify key press', async () => {
-      const keyStatus = await page.evaluate(() => (window as any).lastKeyPressed);
-      expect(keyStatus).toBe('KeyA');
+    await test.step("Verify key press", async () => {
+      const keyStatus = await page.evaluate(
+        () => (window as any).lastKeyPressed
+      );
+      expect(keyStatus).toBe("KeyA");
     });
   });
 
-  test('Mouse input test', async ({ page }) => {
-    await test.step('Simulate mouse click', async () => {
+  test("Mouse input test", async ({ page }) => {
+    await test.step("Simulate mouse click", async () => {
       await page.mouse.click(100, 100);
     });
 
-    await test.step('Verify mouse click', async () => {
-      const clickStatus = await page.evaluate(() => (window as any).lastMouseClick);
+    await test.step("Verify mouse click", async () => {
+      const clickStatus = await page.evaluate(
+        () => (window as any).lastMouseClick
+      );
       expect(clickStatus).toEqual({ x: 100, y: 100 });
     });
   });
+});
