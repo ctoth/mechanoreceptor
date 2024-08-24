@@ -10,6 +10,11 @@ export default defineConfig({
       name: 'Mechanoreceptor',
       fileName: (format) => `mechanoreceptor.${format}.js`,
     },
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'test.html'),
+      },
+    },
   },
   server: {
     port: 3000,
@@ -22,5 +27,4 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['docs/**/*'],
   },
-  publicDir: 'public',
 });
