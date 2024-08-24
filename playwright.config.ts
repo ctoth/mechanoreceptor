@@ -1,9 +1,14 @@
 import { PlaywrightTestConfig, devices } from '@playwright/test';
 import path from 'path';
+import os from 'os';
+
+const numCPUs = os.cpus().length;
+const maxWorkers = Math.max(1, numCPUs - 1); // Ensure at least 1 worker
 
 const config: PlaywrightTestConfig = {
   timeout: 30000, // Set global timeout to 30 seconds
   testDir: './e2e',
+  workers: maxWorkers, // Use number of CPUs - 1 as max workers
   use: {
     headless: true,
     viewport: { width: 1280, height: 720 },
