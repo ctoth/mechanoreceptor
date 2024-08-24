@@ -5,13 +5,6 @@ import { GamepadSource } from './GamepadSource';
 import { TouchSource } from './TouchSource';
 import { ComboSystem, ComboDefinition } from './ComboSystem';
 import { InputBuffer } from './InputBuffer';
-import { InputMapping, MappingConfigManager } from './InputMapping';
-import { KeyboardSource } from './KeyboardSource';
-import { MouseSource } from './MouseSource';
-import { GamepadSource } from './GamepadSource';
-import { TouchSource } from './TouchSource';
-import { ComboSystem, ComboDefinition } from './ComboSystem';
-import { InputBuffer } from './InputBuffer';
 
 export class InputMapper {
   private mappingManager: MappingConfigManager;
@@ -71,7 +64,7 @@ export class InputMapper {
   }
 
   getRecentInputs(duration?: number): string[] {
-    return this.inputBuffer.getRecentInputs(duration);
+    return this.inputBuffer.getRecentInputs();
   }
 
   clearInputBuffer(): void {
