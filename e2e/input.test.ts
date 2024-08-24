@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://localhost:3000/public/test.html');
+  await page.goto('/public/test.html');
   await page.waitForLoadState('domcontentloaded');
 
   // Wait for the script to load
