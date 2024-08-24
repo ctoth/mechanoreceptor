@@ -72,8 +72,8 @@ export class InputMapper {
     }
   }
 
-  addCombo(combo: { id: string, sequence: { inputType: string, inputCode: string | number }[], maxTimeWindow: number }): void {
-    this.comboSystem.addCombo(combo);
+  addCombo(combo: { id: string, sequence: { inputType: 'keyboard' | 'mouse' | 'gamepad' | 'touch', inputCode: string | number }[], maxTimeWindow: number }): void {
+    this.comboSystem.addCombo(combo as ComboDefinition);
   }
 
   removeCombo(comboId: string): void {
