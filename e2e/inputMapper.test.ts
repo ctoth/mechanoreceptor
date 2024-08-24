@@ -63,6 +63,7 @@ test.describe('InputMapper E2E Tests', () => {
       console.log('Triggered actions:', actions);
       return actions;
     });
+    console.log('Triggered actions in test:', triggeredActions);
     expect(triggeredActions).toContain('jump');
   });
 
