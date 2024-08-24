@@ -449,5 +449,18 @@ export class InputMapper {
     this.mouseSource.update();
     this.touchSource.update();
     this.gamepadSource.update();
+    console.log("Input sources updated");
+    console.log("Keyboard state:", this.keyboardSource.getPressedKeys());
+    console.log("Mouse state:", this.mouseSource.getPressedButtons());
   }
 }
+  /**
+   * Logs the current input mappings for debugging purposes.
+   */
+  logMappings(): void {
+    const mappings = this.mappingManager.getMappingsForContext(this.currentContext);
+    console.log("Current input mappings:");
+    mappings.forEach(mapping => {
+      console.log(`Action: ${mapping.actionId}, Input: ${mapping.inputType} - ${mapping.inputCode}`);
+    });
+  }
