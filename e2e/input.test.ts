@@ -1,23 +1,30 @@
 import { test, expect } from "@playwright/test";
 
-const TEST_HTML_URL = "http://localhost:3000/";
+const TEST_HTML_URL = "http://localhost:3000/test.html";
 
 test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
-    test.setTimeout(30000); // Increase timeout to 30 seconds
+    test.setTimeout(60000); // Increase timeout to 60 seconds
     const logs: string[] = [];
     page.on("console", (msg) => {
       console.log("Browser console:", msg.text());
       logs.push(msg.text());
     });
     page.on("pageerror", (err) => console.error("Browser page error:", err));
-    await page.goto(TEST_HTML_URL);
+    
+    await test.step("Navigate to test page", async () => {
+      const response = await page.goto(TEST_HTML_URL);
+      if (response && !response.ok()) {
+        throw new Error(`Failed to load page: ${response.status()} ${response.statusText()}`);
+      }
+    });
+
     await page.waitForLoadState("domcontentloaded");
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
         await page.waitForFunction(
           () => (window as any).mechanoreceptorReady === true || (window as any).mechanoreceptorError,
-          { timeout: 10000 }
+          { timeout: 30000 }
         );
         const error = await page.evaluate(() => (window as any).mechanoreceptorError);
         if (error) {

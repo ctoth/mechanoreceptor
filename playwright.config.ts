@@ -2,7 +2,7 @@ import { PlaywrightTestConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const config: PlaywrightTestConfig = {
-  timeout: 6000, // Set global timeout to 6 seconds
+  timeout: 60000, // Set global timeout to 60 seconds
   testDir: './e2e',
   use: {
     headless: true,

@@ -14,4 +14,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  optimizeDeps: {
+    exclude: ['test.html', 'docs/**/*'],
+  },
 });
