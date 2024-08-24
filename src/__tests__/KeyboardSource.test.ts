@@ -1,33 +1,28 @@
 import { KeyboardSource } from '../KeyboardSource';
-import { vi, describe, beforeEach, afterEach, expect, test } from 'vitest';
+import { describe, beforeEach, afterEach, expect, test, vi } from 'vitest';
+import { JSDOM } from 'jsdom';
+import { fireEvent } from '@testing-library/dom';
 
 describe('KeyboardSource', () => {
   let keyboardSource: KeyboardSource;
-  let addEventListenerSpy: any;
-  let removeEventListenerSpy: any;
-  let mockWindow: any;
+  let dom: JSDOM;
 
   beforeEach(() => {
-    mockWindow = {
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    };
-    global.window = mockWindow as any;
-    global.KeyboardEvent = vi.fn() as any;
+    dom = new JSDOM('<!doctype html><html><body></body></html>', {
+      url: 'http://localhost',
+    });
+    global.window = dom.window as any;
+    global.document = dom.window.document;
     keyboardSource = new KeyboardSource();
-    addEventListenerSpy = vi.spyOn(mockWindow, 'addEventListener');
-    removeEventListenerSpy = vi.spyOn(mockWindow, 'removeEventListener');
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete (global as any).window;
-    delete (global as any).KeyboardEvent;
   });
 
   describe('initialization and disposal', () => {
     test('initialize adds event listeners', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
       keyboardSource.initialize();
       expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
       expect(addEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
@@ -35,6 +30,7 @@ describe('KeyboardSource', () => {
     });
 
     test('dispose removes event listeners', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
       keyboardSource.initialize();
       keyboardSource.dispose();
       expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
@@ -43,6 +39,7 @@ describe('KeyboardSource', () => {
     });
 
     test('multiple initializations do not add duplicate listeners', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
       keyboardSource.initialize();
       keyboardSource.initialize();
       expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
@@ -55,13 +52,13 @@ describe('KeyboardSource', () => {
     });
 
     test('isKeyPressed returns true for pressed keys', () => {
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
     });
 
     test('isKeyPressed returns false for released keys', () => {
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
+      fireEvent.keyUp(window, { code: 'KeyA' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
     });
 
@@ -70,24 +67,24 @@ describe('KeyboardSource', () => {
     });
 
     test('multiple key presses are tracked correctly', () => {
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
+      fireEvent.keyDown(window, { code: 'KeyB' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
       expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
     });
 
     test('key release only affects the released key', () => {
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyB' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
+      fireEvent.keyDown(window, { code: 'KeyB' });
+      fireEvent.keyUp(window, { code: 'KeyA' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
       expect(keyboardSource.isKeyPressed('KeyB')).toBe(true);
     });
 
     test('repeated keydown events do not affect the state', () => {
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
-      mockWindow.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
+      fireEvent.keyDown(window, { code: 'KeyA' });
+      fireEvent.keyUp(window, { code: 'KeyA' });
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
     });
   });
@@ -99,7 +96,7 @@ describe('KeyboardSource', () => {
 
     test('update method does not change key states', () => {
       keyboardSource.initialize();
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
       keyboardSource.update();
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(true);
     });
@@ -112,7 +109,7 @@ describe('KeyboardSource', () => {
 
     test('isKeyPressed works correctly after re-initialization', () => {
       keyboardSource.initialize();
-      mockWindow.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyA' }));
+      fireEvent.keyDown(window, { code: 'KeyA' });
       keyboardSource.dispose();
       keyboardSource.initialize();
       expect(keyboardSource.isKeyPressed('KeyA')).toBe(false);
