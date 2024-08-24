@@ -17,9 +17,14 @@
         console.log('Initializing Mechanoreceptor components');
         const keyboardSource = new Mechanoreceptor.KeyboardSource();
         const mouseSource = new Mechanoreceptor.MouseSource();
+        const gamepadSource = new Mechanoreceptor.GamepadSource();
+        const touchSource = new Mechanoreceptor.TouchSource();
+        const mappingManager = new Mechanoreceptor.MappingConfigManager();
 
         keyboardSource.initialize();
         mouseSource.initialize();
+        gamepadSource.initialize();
+        touchSource.initialize();
         console.log('Mechanoreceptor components initialized');
 
         window.lastKeyPressed = null;
@@ -38,14 +43,19 @@
         function update() {
             keyboardSource.update();
             mouseSource.update();
+            gamepadSource.update();
+            touchSource.update();
             requestAnimationFrame(update);
         }
 
         update();
 
-        // Expose sources for debugging
+        // Expose components for testing
         window.keyboardSource = keyboardSource;
         window.mouseSource = mouseSource;
+        window.gamepadSource = gamepadSource;
+        window.touchSource = touchSource;
+        window.mappingManager = mappingManager;
 
         // Signal that Mechanoreceptor is ready
         window.mechanoreceptorReady = true;
