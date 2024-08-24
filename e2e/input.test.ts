@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
 
-const TEST_HTML_PATH = path.join(__dirname, "..", "public", "test.html");
+const TEST_HTML_URL = "http://localhost:8080/public/test.html";
 
 test.describe("Input tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -11,7 +11,7 @@ test.describe("Input tests", () => {
       logs.push(msg.text());
     });
     page.on("pageerror", (err) => console.error("Browser page error:", err));
-    await page.goto(`file://${TEST_HTML_PATH}`);
+    await page.goto(TEST_HTML_URL);
     await page.waitForLoadState("domcontentloaded");
     await test.step("Wait for Mechanoreceptor to load", async () => {
       try {
