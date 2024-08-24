@@ -16,5 +16,5 @@
     "types": ["vitest/globals", "@playwright/test"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "e2e/**/*"]
+  "exclude": ["node_modules", "**/*.spec.ts", "e2e/**/*", "__tests__"]
 }
