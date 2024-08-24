@@ -183,6 +183,9 @@ export class InputMapper {
    *   // Update game state
    *   updateGameState();
    * 
+   *   // Update input state
+   *   inputMapper.update();
+   * 
    *   // Map inputs to actions
    *   const triggeredActions = inputMapper.mapInput();
    *   
@@ -373,3 +376,27 @@ export class InputMapper {
     this.comboSystem.removeCombo(comboId);
   }
 }
+  /**
+   * Updates the state of all input sources.
+   * This method should be called once per frame in the game loop, before mapInput().
+   * It ensures that the latest input states are available for mapping.
+   * 
+   * @example
+   * ```typescript
+   * function gameLoop() {
+   *   // Update input state
+   *   inputMapper.update();
+   * 
+   *   // Map inputs to actions
+   *   const triggeredActions = inputMapper.mapInput();
+   * 
+   *   // ... rest of the game loop
+   * }
+   * ```
+   */
+  update(): void {
+    this.keyboardSource.update();
+    this.mouseSource.update();
+    this.touchSource.update();
+    this.gamepadSource.update();
+  }

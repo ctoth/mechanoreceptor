@@ -8,6 +8,8 @@ Mechanoreceptor is a powerful and flexible TypeScript library designed to handle
 - Flexible input mapping system with context-based configurations
 - Combo detection for complex input sequences
 - Input buffering for timing-sensitive inputs
+- Throttling and debouncing for optimized performance
+- Gamepad vibration support for compatible devices
 - Easy integration with existing game engines and frameworks
 - Written in TypeScript for type safety and better developer experience
 
@@ -75,6 +77,9 @@ inputMapper.setContext('gameplay');
 
 // In your game loop
 function gameLoop() {
+  // Update input state
+  inputMapper.update();
+
   // Get triggered actions
   const actions = inputMapper.mapInput();
 
@@ -125,6 +130,21 @@ You can access recent inputs for more complex game mechanics:
 ```typescript
 const recentInputs = inputMapper.getRecentInputs(500); // Get inputs from last 500ms
 ```
+
+### Gamepad Vibration
+
+For gamepads that support haptic feedback:
+
+```typescript
+gamepadSource.vibrate(0, 200, 0.5, 0.8); // Vibrate gamepad 0 for 200ms
+```
+
+## Performance Optimization
+
+Mechanoreceptor includes built-in performance optimizations:
+
+- Mouse move events are throttled and debounced for smooth performance.
+- Gamepad state is polled at a fixed interval to balance responsiveness and efficiency.
 
 ## Documentation
 

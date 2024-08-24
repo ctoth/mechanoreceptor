@@ -10,18 +10,39 @@ export interface ComboDefinition {
   maxTimeWindow: number;
 }
 
+/**
+ * Manages and detects input combinations (combos) in the game.
+ * This system allows for complex input sequences to be recognized,
+ * enabling features like special moves or cheat codes.
+ */
 export class ComboSystem {
   private combos: ComboDefinition[] = [];
   private activeSequences: Map<string, { inputs: ComboInput[], startTime: number }> = new Map();
 
+  /**
+   * Adds a new combo definition to the system.
+   * 
+   * @param combo - The combo definition to add.
+   */
   addCombo(combo: ComboDefinition): void {
     this.combos.push(combo);
   }
 
+  /**
+   * Removes a combo definition from the system.
+   * 
+   * @param comboId - The ID of the combo to remove.
+   */
   removeCombo(comboId: string): void {
     this.combos = this.combos.filter(combo => combo.id !== comboId);
   }
 
+  /**
+   * Checks if the given input completes any combo sequences.
+   * 
+   * @param input - The input to check against active combo sequences.
+   * @returns An array of IDs of completed combos.
+   */
   checkCombos(input: ComboInput): string[] {
     const triggeredCombos: string[] = [];
     const currentTime = Date.now();
