@@ -1,0 +1,1 @@
+  private isInitialized: boolean = false;
