@@ -111,3 +111,12 @@ Mechanoreceptor is released under the MIT License. See the [LICENSE](LICENSE) fi
 If you encounter any issues or have questions, please file an issue on our [GitHub issue tracker](https://github.com/yourusername/mechanoreceptor/issues).
 
 Happy gaming!
+## Documentation
+
+To generate the documentation, run:
+
+```bash
+npm run docs
+```
+
+This will create a `docs` folder with the generated documentation. Open `docs/index.html` in your browser to view it.
