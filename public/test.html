@@ -20,10 +20,12 @@
 
         keyboardSource.onKeyDown = (event) => {
             window.lastKeyPressed = event.code;
+            console.log('Key pressed:', event.code);
         };
 
         mouseSource.onMouseDown = (event) => {
             window.lastMouseClick = { x: event.clientX, y: event.clientY };
+            console.log('Mouse clicked:', event.clientX, event.clientY);
         };
 
         function update() {
@@ -33,6 +35,10 @@
         }
 
         update();
+
+        // Expose sources for debugging
+        window.keyboardSource = keyboardSource;
+        window.mouseSource = mouseSource;
     </script>
 </body>
 </html>
