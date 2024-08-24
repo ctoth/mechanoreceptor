@@ -8,17 +8,30 @@ import { InputBuffer } from './InputBuffer';
 
 /**
  * The InputMapper class is the central component of the Mechanoreceptor input handling system.
- * It coordinates various input sources, maps raw inputs to game actions, and manages features
- * like input combos and buffering.
+ * It orchestrates the interaction between various input sources (keyboard, mouse, gamepad, touch),
+ * mapping raw inputs to game actions, managing input combos, and providing an input buffer for
+ * advanced input processing.
+ * 
+ * Key features:
+ * - Unified input handling across multiple input sources
+ * - Context-based input mapping for different game states
+ * - Support for complex input combinations (combos)
+ * - Input buffering for timing-sensitive inputs
+ * - Extensible architecture for adding new input sources
+ * 
+ * The InputMapper acts as a bridge between the low-level input events and high-level game actions,
+ * allowing developers to create responsive and flexible control schemes for their games.
  * 
  * @example
  * ```typescript
+ * // Initialize input sources
  * const mappingManager = new MappingConfigManager();
  * const keyboardSource = new KeyboardSource();
  * const mouseSource = new MouseSource();
  * const gamepadSource = new GamepadSource();
  * const touchSource = new TouchSource();
  * 
+ * // Create the InputMapper
  * const inputMapper = new InputMapper(
  *   mappingManager,
  *   keyboardSource,
@@ -27,15 +40,45 @@ import { InputBuffer } from './InputBuffer';
  *   touchSource
  * );
  * 
+ * // Load input mappings
+ * mappingManager.loadMappings(JSON.stringify([
+ *   { contextId: 'game', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
+ *   { contextId: 'game', actionId: 'shoot', inputType: 'mouse', inputCode: 0 }
+ * ]));
+ * 
+ * // Set the current context
+ * inputMapper.setContext('game');
+ * 
  * // In your game loop
  * function gameLoop() {
+ *   // Update input state
+ *   inputMapper.update();
+ * 
+ *   // Get triggered actions
  *   const triggeredActions = inputMapper.mapInput();
+ * 
  *   // Handle triggered actions
+ *   for (const action of triggeredActions) {
+ *     switch (action) {
+ *       case 'jump':
+ *         player.jump();
+ *         break;
+ *       case 'shoot':
+ *         player.shoot();
+ *         break;
+ *     }
+ *   }
+ * 
+ *   // Continue the game loop
  *   requestAnimationFrame(gameLoop);
  * }
  * 
+ * // Start the game loop
  * gameLoop();
  * ```
+ * 
+ * This example demonstrates how to set up the InputMapper, load mappings,
+ * and use it within a game loop to handle player inputs.
  */
 export class InputMapper {
   private mappingManager: MappingConfigManager;
@@ -86,16 +129,34 @@ export class InputMapper {
    * Sets the current input context. Different contexts can have different input mappings,
    * allowing for context-specific input handling (e.g., menu navigation vs. in-game controls).
    * 
-   * @param contextId - The ID of the context to set.
+   * Use this method to switch between different input configurations based on the current
+   * game state or screen. This enables you to reuse input codes for different actions in
+   * different parts of your game without conflict.
+   * 
+   * @param contextId - The ID of the context to set. This should match the `contextId`
+   *                    used in your input mappings configuration.
    * 
    * @example
    * ```typescript
-   * inputMapper.setContext('mainMenu');
-   * // Now, input mapping will use the 'mainMenu' context
+   * // Configure mappings for different contexts
+   * mappingManager.loadMappings(JSON.stringify([
+   *   { contextId: 'mainMenu', actionId: 'select', inputType: 'keyboard', inputCode: 'Enter' },
+   *   { contextId: 'mainMenu', actionId: 'back', inputType: 'keyboard', inputCode: 'Escape' },
+   *   { contextId: 'inGame', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
+   *   { contextId: 'inGame', actionId: 'pause', inputType: 'keyboard', inputCode: 'Escape' }
+   * ]));
    * 
+   * // In the main menu
+   * inputMapper.setContext('mainMenu');
+   * // Now, 'Enter' will trigger 'select' and 'Escape' will trigger 'back'
+   * 
+   * // When starting the game
    * inputMapper.setContext('inGame');
-   * // Switched to 'inGame' context, which may have different input mappings
+   * // Now, 'Space' will trigger 'jump' and 'Escape' will trigger 'pause'
    * ```
+   * 
+   * By using contexts, you can create more intuitive and flexible control schemes
+   * that adapt to different parts of your game.
    */
   setContext(contextId: string): void {
     this.currentContext = contextId;
@@ -103,15 +164,29 @@ export class InputMapper {
 
   /**
    * Maps raw inputs to game actions based on the current context and input mappings.
-   * This method should be called once per frame in the game loop.
+   * This method should be called once per frame in the game loop to process all active inputs
+   * and return the corresponding game actions.
    * 
-   * @returns An array of triggered action IDs.
+   * The method performs the following steps:
+   * 1. Retrieves the input mappings for the current context.
+   * 2. Checks the state of all input sources (keyboard, mouse, gamepad, touch).
+   * 3. Determines which mapped actions are triggered based on the active inputs.
+   * 4. Processes any input combos that may have been triggered.
+   * 5. Adds all triggered actions and combos to the input buffer.
+   * 
+   * @returns An array of triggered action IDs. These are the string identifiers for game actions
+   *          that were mapped to the current active inputs.
    * 
    * @example
    * ```typescript
    * function gameLoop() {
+   *   // Update game state
+   *   updateGameState();
+   * 
+   *   // Map inputs to actions
    *   const triggeredActions = inputMapper.mapInput();
    *   
+   *   // Handle triggered actions
    *   for (const action of triggeredActions) {
    *     switch (action) {
    *       case 'jump':
@@ -120,13 +195,29 @@ export class InputMapper {
    *       case 'shoot':
    *         player.shoot();
    *         break;
+   *       case 'crouch':
+   *         player.crouch();
+   *         break;
+   *       case 'useItem':
+   *         player.useSelectedItem();
+   *         break;
    *       // ... handle other actions
    *     }
    *   }
    * 
+   *   // Render game
+   *   renderGame();
+   * 
+   *   // Continue the game loop
    *   requestAnimationFrame(gameLoop);
    * }
+   * 
+   * // Start the game loop
+   * gameLoop();
    * ```
+   * 
+   * This method is the core of the input handling system. By calling it each frame,
+   * you ensure that your game consistently responds to player inputs with minimal latency.
    */
   mapInput(): string[] {
     const mappings = this.mappingManager.getMappingsForContext(this.currentContext);
