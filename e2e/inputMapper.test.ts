@@ -44,6 +44,26 @@ test.describe('InputMapper E2E Tests', () => {
 
       console.log('InputMapper initialized with mappings:', testMappings);
     });
+
+    // Log the initial state
+    await page.evaluate(() => {
+      console.log('Initial InputMapper state:', window.inputMapper);
+    });
+  });
+
+  test('Keyboard input mapping in game context', async ({ page }) => {
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(100); // Add a small delay
+    const triggeredActions = await page.evaluate(() => {
+      console.log('Before update');
+      window.inputMapper.update();
+      console.log('After update, before mapInput');
+      const actions = window.inputMapper.mapInput();
+      console.log('After mapInput');
+      console.log('Triggered actions:', actions);
+      return actions;
+    });
+    expect(triggeredActions).toContain('jump');
   });
 
   test('Keyboard input mapping in game context', async ({ page }) => {
