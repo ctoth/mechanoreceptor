@@ -7,5 +7,6 @@
   "excludeExternals": true,
   "theme": "default",
   "readme": "README.md",
-  "exclude": ["**/__tests__/**/*"]
+  "exclude": ["**/__tests__/**/*", "**/*.test.ts", "**/*.spec.ts"],
+  "entryPointStrategy": "expand"
 }
