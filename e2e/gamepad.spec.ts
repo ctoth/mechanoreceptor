@@ -50,6 +50,14 @@ test.describe("Gamepad Input Tests", () => {
       window.setContext("game");
       const gamepad = { index: 0, buttons: [{ pressed: true, value: 1 }], axes: [] };
       window.gamepadSource.updateGamepadState(gamepad);
+      
+      // Add a mapping for the gamepad button
+      window.inputMapper.mappingManager.addMapping({
+        contextId: "game",
+        actionId: "accelerate",
+        inputType: "gamepad",
+        inputCode: "button0"
+      });
     });
 
     const result = await page.evaluate(() => {
