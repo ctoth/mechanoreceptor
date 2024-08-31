@@ -36,7 +36,7 @@ test.describe("Gamepad Input Tests", () => {
 
   test("Gamepad axis movement detection", async ({ page }) => {
     await page.evaluate(() => {
-      const gamepad = { buttons: [], axes: [0.5, -0.5] };
+      const gamepad = { index: 0, buttons: [], axes: [0.5, -0.5] };
       window.gamepadSource.updateGamepadState(gamepad);
     });
     const axisValue = await page.evaluate(() => {
