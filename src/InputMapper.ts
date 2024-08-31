@@ -232,7 +232,8 @@ export class InputMapper {
    * you ensure that your game consistently responds to player inputs with minimal latency.
    */
   mapInput(): string[] {
-    const mappings = this.mappingManager.getMappings().filter(
+    const allMappings = this.mappingManager.getMappings();
+    const mappings = allMappings.filter(
       mapping => mapping.contextId === this.currentContext
     );
     const triggeredActions: string[] = [];

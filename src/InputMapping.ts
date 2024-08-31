@@ -124,4 +124,13 @@ export class MappingConfigManager {
   serializeMappings(): string {
     return JSON.stringify(this.mappings);
   }
+
+  /**
+   * Retrieves all current input mappings.
+   * 
+   * @returns An array of all InputMapping objects.
+   */
+  getMappings(): InputMapping[] {
+    return this.mappings;
+  }
 }
