@@ -281,11 +281,19 @@ export class InputMapper {
       }
       case "gamepad": {
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        const gamepadState = this.gamepadSource.isButtonPressed(
-          gamepadIndex,
-          mapping.inputCode as number
-        );
-        return gamepadState;
+        if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('button')) {
+          const buttonIndex = parseInt(mapping.inputCode.slice(6), 10);
+          const gamepadState = this.gamepadSource.isButtonPressed(
+            gamepadIndex,
+            buttonIndex
+          );
+          return gamepadState;
+        } else if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('axis')) {
+          const axisIndex = parseInt(mapping.inputCode.slice(4), 10);
+          const axisValue = this.gamepadSource.getAxisValue(gamepadIndex, axisIndex);
+          return Math.abs(axisValue) > 0.5; // Consider axis active if its absolute value is greater than 0.5
+        }
+        return false;
       }
       case "touch": {
         const touchState = this.touchSource.isTouching();
