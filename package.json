@@ -1,6 +1,6 @@
 {
   "name": "mechanoreceptor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Translate user input into signals your game can understand",
   "main": "dist/index.js",
   "type": "module",
