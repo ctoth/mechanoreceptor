@@ -40,14 +40,18 @@ test.describe("Mouse Input Tests", () => {
 
   test("Mouse input mapping", async ({ page }) => {
     await page.evaluate(() => window.setContext("game"));
-    await page.mouse.click(100, 100);
-
+    await page.mouse.down();
+    
     const actions = await page.evaluate(() => {
       window.inputMapper.update();
       return window.inputMapper.mapInput();
     });
 
+    console.log('Mapped actions:', actions);
+
     expect(actions).toContain("shoot");
+
+    await page.mouse.up();
   });
 
   test("Multiple mouse button press detection", async ({ page }) => {
