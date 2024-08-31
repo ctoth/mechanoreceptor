@@ -37,6 +37,9 @@ describe("InputMapper", () => {
 
     // Mock the ComboSystem constructor
     (ComboSystem as unknown as vi.Mock).mockImplementation(() => comboSystem);
+
+    // Mock the getMappingsForContext method
+    mappingManager.getMappingsForContext = vi.fn().mockReturnValue([]);
   });
 
   test("setContext changes the current context", () => {
