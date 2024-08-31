@@ -1,66 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mechanoreceptor Test Page</title>
-</head>
-
-<body>
+  </head>
+  <body>
     <h1>Mechanoreceptor Test Page</h1>
+    <div id="output"></div>
+
     <script type="module">
-        console.log('Script started');
-        import * as Mechanoreceptor from './src/index.ts'
-        window.Mechanoreceptor = Mechanoreceptor;
+      import {
+        KeyboardSource,
+        MouseSource,
+        TouchSource,
+        GamepadSource,
+        InputMapper,
+        MappingConfigManager,
+        ComboSystem,
+        InputBuffer,
+      } from "./src/index.ts";
 
-        console.log('Initializing Mechanoreceptor components');
-        const keyboardSource = new Mechanoreceptor.KeyboardSource();
-        const mouseSource = new Mechanoreceptor.MouseSource();
-        const gamepadSource = new Mechanoreceptor.GamepadSource();
-        const touchSource = new Mechanoreceptor.TouchSource();
-        const mappingManager = new Mechanoreceptor.MappingConfigManager();
+      console.log("Starting Mechanoreceptor initialization");
+      window.lastTouch = null;
 
-        keyboardSource.initialize();
-        mouseSource.initialize();
-        gamepadSource.initialize();
-        touchSource.initialize();
-        console.log('Mechanoreceptor components initialized');
+      // Initialize components
+      const keyboardSource = new KeyboardSource();
+      const mouseSource = new MouseSource();
+      const touchSource = new TouchSource();
+      const gamepadSource = new GamepadSource();
+      const mappingManager = new MappingConfigManager();
+      const comboSystem = new ComboSystem();
+      const inputBuffer = new InputBuffer();
 
-        window.lastKeyPressed = null;
-        window.lastMouseClick = null;
+      console.log("Components created");
 
-        keyboardSource.onKeyDown = (event) => {
-            window.lastKeyPressed = event.code;
-            console.log('Key pressed:', event.code);
-        };
+      console.log("Creating InputMapper with:", {
+        mappingManager,
+        keyboardSource,
+        mouseSource,
+        gamepadSource,
+        touchSource,
+      });
 
-        mouseSource.onMouseDown = (event) => {
-            window.lastMouseClick = { x: event.clientX, y: event.clientY };
-            console.log('Mouse clicked:', event.clientX, event.clientY);
-        };
+      const inputMapper = new InputMapper(
+        mappingManager,
+        keyboardSource,
+        mouseSource,
+        gamepadSource,
+        touchSource
+      );
 
-        function update() {
-            keyboardSource.update();
-            mouseSource.update();
-            gamepadSource.update();
-            touchSource.update();
-            requestAnimationFrame(update);
+      console.log("InputMapper created:", inputMapper);
+
+      // Initialize input sources
+      keyboardSource.initialize();
+      mouseSource.initialize();
+      touchSource.initialize();
+      gamepadSource.initialize();
+
+      console.log("Input sources initialized");
+
+      // Load mappings
+      const mappings = [
+        {
+          contextId: "game",
+          actionId: "jump",
+          inputType: "keyboard",
+          inputCode: "Space",
+        },
+        {
+          contextId: "menu",
+          actionId: "select",
+          inputType: "keyboard",
+          inputCode: "Enter",
+        },
+      ];
+      mappingManager.loadMappings(JSON.stringify(mappings));
+      console.log("Mappings loaded:", mappings);
+      console.log("Mappings loaded:", mappings);
+
+      console.log("Mappings loaded");
+
+      // Expose components and state to global scope for testing
+      window.keyboardSource = keyboardSource;
+      window.mouseSource = mouseSource;
+      window.touchSource = touchSource;
+      window.gamepadSource = gamepadSource;
+      window.inputMapper = inputMapper;
+      window.lastKeyPressed = null;
+      window.lastMouseClick = null;
+      window.lastTouch = null;
+      window.lastActions = [];
+
+      console.log("Components exposed to global scope");
+
+      // Set up event listeners
+      keyboardSource.onKeyDown = (event) => {
+        window.lastKeyPressed = event.code;
+        updateOutput(`Last key pressed: ${event.code}`);
+      };
+
+      mouseSource.onMouseDown = (event) => {
+        window.lastMouseClick = { x: event.clientX, y: event.clientY };
+        updateOutput(`Last mouse click: (${event.clientX}, ${event.clientY})`);
+      };
+
+      touchSource.onTouchStart = (event) => {
+        const touch = event.touches[0];
+        window.lastTouch = { x: touch.clientX, y: touch.clientY };
+        updateOutput(`Last touch: (${touch.clientX}, ${touch.clientY})`);
+      };
+
+      console.log("Event listeners set up");
+
+      // Implement setContext function
+      window.setContext = (context) => {
+        inputMapper.setContext(context);
+        updateOutput(`Context set to: ${context}`);
+      };
+
+      // Update function
+      function update() {
+        inputMapper.update();
+        const actions = inputMapper.mapInput();
+        if (actions.length > 0) {
+          window.lastActions = actions;
+          updateOutput(`Actions: ${actions.join(", ")}`);
         }
+        requestAnimationFrame(update);
+      }
 
-        update();
+      // Helper function to update the output div
+      function updateOutput(message) {
+        const outputDiv = document.getElementById("output");
+        outputDiv.textContent = message;
+      }
 
-        // Expose components for testing
-        window.keyboardSource = keyboardSource;
-        window.mouseSource = mouseSource;
-        window.gamepadSource = gamepadSource;
-        window.touchSource = touchSource;
-        window.mappingManager = mappingManager;
+      // Start the update loop
+      update();
 
-        // Signal that Mechanoreceptor is ready
-        window.mechanoreceptorReady = true;
-        console.log('Mechanoreceptor is ready');
+      console.log("Update loop started");
+
+      // Signal that Mechanoreceptor is ready
+      window.mechanoreceptorReady = true;
+      console.log("Mechanoreceptor initialization complete");
+
+      // Add a function to check if everything is ready
+      function checkReady() {
+        if (
+          window.keyboardSource &&
+          window.mouseSource &&
+          window.touchSource &&
+          window.gamepadSource &&
+          window.inputMapper
+        ) {
+          console.log("All components are initialized");
+          window.mechanoreceptorReady = true;
+        } else {
+          console.log("Not all components are ready yet");
+          setTimeout(checkReady, 100);
+        }
+      }
+
+      // Start checking if everything is ready
+      checkReady();
     </script>
-</body>
-
+  </body>
 </html>

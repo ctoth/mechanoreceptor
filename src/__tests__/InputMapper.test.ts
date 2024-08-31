@@ -31,11 +31,8 @@ describe("InputMapper", () => {
     comboSystem = new ComboSystem() as vi.Mocked<ComboSystem>;
 
     inputMapper = new InputMapper(
-      mappingManager,
-      keyboardSource,
-      mouseSource,
-      gamepadSource,
-      touchSource
+      [keyboardSource, mouseSource, gamepadSource, touchSource],
+      mappingManager
     );
 
     // Mock the ComboSystem constructor
@@ -156,11 +153,8 @@ describe("InputMapper", () => {
 
   test("getRecentInputs returns correct inputs", () => {
     const inputMapper = new InputMapper(
+      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
-      keyboardSource,
-      mouseSource,
-      gamepadSource,
-      touchSource,
       5,
       1000
     );
@@ -199,11 +193,8 @@ describe("InputMapper", () => {
 
   test("clearInputBuffer clears the input buffer", () => {
     const inputMapper = new InputMapper(
+      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
-      keyboardSource,
-      mouseSource,
-      gamepadSource,
-      touchSource,
       5,
       1000
     );
@@ -234,11 +225,8 @@ describe("InputMapper", () => {
 
   test("setInputBufferSize changes the buffer size", () => {
     const inputMapper = new InputMapper(
+      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
-      keyboardSource,
-      mouseSource,
-      gamepadSource,
-      touchSource,
       5,
       1000
     );

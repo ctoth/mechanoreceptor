@@ -52,9 +52,13 @@ export class GamepadSource implements InputSource {
    * Sets up event listeners for gamepad connections and starts the polling mechanism.
    */
   initialize(): void {
-    window.addEventListener('gamepadconnected', this.handleGamepadConnected);
-    window.addEventListener('gamepaddisconnected', this.handleGamepadDisconnected);
-    this.startPolling();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('gamepadconnected', this.handleGamepadConnected);
+      window.addEventListener('gamepaddisconnected', this.handleGamepadDisconnected);
+      this.startPolling();
+    } else {
+      console.warn('GamepadSource: window is not defined, skipping initialization');
+    }
   }
 
   /**
@@ -83,6 +87,7 @@ export class GamepadSource implements InputSource {
   private handleGamepadConnected = (event: GamepadEvent): void => {
     this.connectedGamepads.add(event.gamepad.index);
     console.log(`Gamepad connected at index ${event.gamepad.index}: ${event.gamepad.id}`);
+    console.log('Connected gamepads after connection:', JSON.stringify(Array.from(this.connectedGamepads)));
   }
 
   /**

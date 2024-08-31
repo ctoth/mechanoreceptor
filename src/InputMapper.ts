@@ -5,6 +5,7 @@ import { GamepadSource } from "./GamepadSource";
 import { TouchSource } from "./TouchSource";
 import { ComboSystem, ComboDefinition } from "./ComboSystem";
 import { InputBuffer } from "./InputBuffer";
+import { InputSource } from "./InputSource";
 
 /**
  * The InputMapper class is the central component of the Mechanoreceptor input handling system.
@@ -89,6 +90,7 @@ export class InputMapper {
   private comboSystem: ComboSystem;
   private inputBuffer: InputBuffer;
   private currentContext = "default";
+  inputSources: InputSource[];
 
   /**
    * Gets the current input context.
@@ -120,14 +122,8 @@ export class InputMapper {
     bufferSize = 10,
     bufferDuration = 100
   ) {
-    if (
-      !mappingManager ||
-      !keyboardSource ||
-      !mouseSource ||
-      !gamepadSource ||
-      !touchSource
-    ) {
-      throw new Error("All input sources and mapping manager must be provided");
+    if (!mappingManager) {
+      throw new Error("Mapping manager must be provided");
     }
 
     this.mappingManager = mappingManager;
@@ -135,8 +131,21 @@ export class InputMapper {
     this.mouseSource = mouseSource;
     this.gamepadSource = gamepadSource;
     this.touchSource = touchSource;
+    this.inputSources = [
+      keyboardSource,
+      mouseSource,
+      gamepadSource,
+      touchSource,
+    ];
     this.comboSystem = new ComboSystem();
     this.inputBuffer = new InputBuffer(bufferSize, bufferDuration);
+  }
+
+  private findSourceByName(
+    sources: InputSource[],
+    name: string
+  ): InputSource | undefined {
+    return sources.find((source) => source.constructor.name === name);
   }
 
   /**
@@ -242,18 +251,11 @@ export class InputMapper {
     );
     const triggeredActions: string[] = [];
 
-    console.log("Current context:", this.currentContext);
-    console.log("Available mappings:", mappings);
-
     for (const mapping of mappings) {
-      console.log("Checking mapping:", mapping);
       const isActive = this.isInputActive(mapping);
-      console.log("Is input active:", isActive);
       if (isActive) {
         triggeredActions.push(mapping.actionId);
         this.inputBuffer.addInput(mapping.actionId);
-
-        console.log("Triggered action:", mapping.actionId);
 
         // Check for combos
         const comboInput = {
@@ -264,41 +266,30 @@ export class InputMapper {
         triggeredActions.push(...triggeredCombos);
         triggeredCombos.forEach((combo) => {
           this.inputBuffer.addInput(combo);
-          console.log("Triggered combo:", combo);
         });
       }
     }
 
-    console.log("All triggered actions:", triggeredActions);
+    (window as any).lastActions = triggeredActions; // Update the global lastActions for testing
     return triggeredActions;
   }
 
   private isInputActive(mapping: InputMapping): boolean {
-    console.log("Checking input active for:", mapping);
     const inputState = this.getInputState(mapping);
-    console.log("Input state:", inputState);
     return inputState;
   }
 
   private getInputState(mapping: InputMapping): boolean {
-    console.log("Checking input state for:", mapping);
     switch (mapping.inputType) {
       case "keyboard": {
         const keyState = this.keyboardSource.isKeyPressed(
           mapping.inputCode as string
         );
-        console.log("Keyboard state for", mapping.inputCode, ":", keyState);
         return keyState;
       }
       case "mouse": {
         const mouseState = this.mouseSource.isButtonPressed(
           mapping.inputCode as number
-        );
-        console.log(
-          "Mouse state for button",
-          mapping.inputCode,
-          ":",
-          mouseState
         );
         return mouseState;
       }
@@ -307,12 +298,6 @@ export class InputMapper {
         const gamepadState = this.gamepadSource.isButtonPressed(
           gamepadIndex,
           mapping.inputCode as number
-        );
-        console.log(
-          "Gamepad state for button",
-          mapping.inputCode,
-          ":",
-          gamepadState
         );
         return gamepadState;
       }
@@ -463,9 +448,6 @@ export class InputMapper {
     this.mouseSource.update();
     this.touchSource.update();
     this.gamepadSource.update();
-    console.log("Input sources updated");
-    console.log("Keyboard state:", this.keyboardSource.getPressedKeys());
-    console.log("Mouse state:", this.mouseSource.getPressedButtons());
   }
 
   /**
@@ -475,7 +457,6 @@ export class InputMapper {
     const mappings = this.mappingManager.getMappingsForContext(
       this.currentContext
     );
-    console.log("Current input mappings:");
     mappings.forEach((mapping) => {
       console.log(
         `Action: ${mapping.actionId}, Input: ${mapping.inputType} - ${mapping.inputCode}`

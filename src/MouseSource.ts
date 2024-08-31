@@ -64,9 +64,15 @@ export class MouseSource implements InputSource {
    * @implements {InputSource.initialize}
    */
   initialize(): void {
-    window.addEventListener("mousemove", this.handleMouseMove);
-    window.addEventListener("mousedown", this.handleMouseDown);
-    window.addEventListener("mouseup", this.handleMouseUp);
+    if (typeof window !== "undefined") {
+      window.addEventListener("mousemove", this.handleMouseMove);
+      window.addEventListener("mousedown", this.handleMouseDown);
+      window.addEventListener("mouseup", this.handleMouseUp);
+    } else {
+      console.warn(
+        "MouseSource: window is not defined, skipping event listeners"
+      );
+    }
   }
 
   /**

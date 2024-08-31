@@ -77,6 +77,10 @@ export class TouchSource implements InputSource {
    */
   private handleTouchStart = (event: TouchEvent): void => {
     this.updateTouches(event.touches);
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      (window as any).lastTouch = { x: touch.clientX, y: touch.clientY };
+    }
   }
 
   /**

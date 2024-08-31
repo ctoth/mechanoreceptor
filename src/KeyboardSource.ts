@@ -7,9 +7,13 @@ export class KeyboardSource implements InputSource {
 
   initialize(): void {
     if (!this.isInitialized) {
-      window.addEventListener('keydown', this.handleKeyDown);
-      window.addEventListener('keyup', this.handleKeyUp);
-      this.isInitialized = true;
+      if (typeof window !== 'undefined') {
+        window.addEventListener('keydown', this.handleKeyDown);
+        window.addEventListener('keyup', this.handleKeyUp);
+        this.isInitialized = true;
+      } else {
+        console.warn('KeyboardSource: window is not defined, skipping event listeners');
+      }
     }
   }
 
@@ -32,14 +36,20 @@ export class KeyboardSource implements InputSource {
     if (this.onKeyDown) {
       this.onKeyDown(event);
     }
+    console.log('Key pressed:', event.code);
+    console.log('Current pressed keys:', Array.from(this.pressedKeys));
   }
 
   private handleKeyUp = (event: KeyboardEvent): void => {
     this.pressedKeys.delete(event.code);
+    console.log('Key released:', event.code);
+    console.log('Current pressed keys:', Array.from(this.pressedKeys));
   }
 
   isKeyPressed(keyCode: string): boolean {
-    return this.pressedKeys.has(keyCode);
+    const isPressed = this.pressedKeys.has(keyCode);
+    console.log(`Checking if ${keyCode} is pressed:`, isPressed);
+    return isPressed;
   }
 
   getPressedKeys(): string[] {
