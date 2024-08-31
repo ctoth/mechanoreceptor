@@ -152,8 +152,7 @@ export class GamepadSource implements InputSource {
    * @returns True if the button is pressed, false otherwise.
    */
   isButtonPressed(gamepadIndex: number, buttonIndex: number): boolean {
-    const gamepad = this.gamepads.get(gamepadIndex);
-    return gamepad ? gamepad.buttons[buttonIndex]?.pressed || false : false;
+    return this.isButtonPressedRaw(gamepadIndex, buttonIndex);
   }
 
   isButtonPressedRaw(gamepadIndex: number, buttonIndex: number): boolean {

@@ -276,11 +276,12 @@ export class InputMapper {
         return false;
       case 'gamepad':
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('button')) {
-          const buttonIndex = parseInt(mapping.inputCode.slice(6), 10);
-          return this.gamepadSource.isButtonPressed(gamepadIndex, buttonIndex);
+        if (typeof mapping.inputCode === 'number') {
+          return this.gamepadSource.isButtonPressed(gamepadIndex, mapping.inputCode);
         }
         return false;
+      case 'touch':
+        return this.touchSource.isTouching();
       default:
         return false;
     }
