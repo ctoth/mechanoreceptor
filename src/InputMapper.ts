@@ -277,7 +277,7 @@ export class InputMapper {
       case 'gamepad':
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
         if (typeof mapping.inputCode === 'number') {
-          return this.gamepadSource.isButtonPressed(gamepadIndex, mapping.inputCode);
+          return this.gamepadSource.isButtonPressedRaw(gamepadIndex, mapping.inputCode);
         }
         return false;
       case 'touch':
