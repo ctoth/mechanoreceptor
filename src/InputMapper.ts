@@ -83,10 +83,6 @@ import { InputSource } from "./InputSource";
  */
 export class InputMapper {
   private mappingManager: MappingConfigManager;
-  private keyboardSource: KeyboardSource;
-  private mouseSource: MouseSource;
-  private gamepadSource: GamepadSource;
-  private touchSource: TouchSource;
   private comboSystem: ComboSystem;
   private inputBuffer: InputBuffer;
   private currentContext = "default";
@@ -103,22 +99,16 @@ export class InputMapper {
   /**
    * Creates a new InputMapper instance.
    *
+   * @param inputSources - An array of InputSource instances.
    * @param mappingManager - The MappingConfigManager instance for handling input mappings.
-   * @param keyboardSource - The KeyboardSource instance for keyboard inputs.
-   * @param mouseSource - The MouseSource instance for mouse inputs.
-   * @param gamepadSource - The GamepadSource instance for gamepad inputs.
-   * @param touchSource - The TouchSource instance for touch inputs.
    * @param bufferSize - The size of the input buffer (default: 10).
    * @param bufferDuration - The duration of the input buffer in milliseconds (default: 100).
    *
    * @throws {Error} If any of the required parameters are missing or invalid.
    */
   constructor(
+    inputSources: InputSource[],
     mappingManager: MappingConfigManager,
-    keyboardSource: KeyboardSource,
-    mouseSource: MouseSource,
-    gamepadSource: GamepadSource,
-    touchSource: TouchSource,
     bufferSize = 10,
     bufferDuration = 100
   ) {
@@ -126,17 +116,8 @@ export class InputMapper {
       throw new Error("Mapping manager must be provided");
     }
 
+    this.inputSources = inputSources;
     this.mappingManager = mappingManager;
-    this.keyboardSource = keyboardSource;
-    this.mouseSource = mouseSource;
-    this.gamepadSource = gamepadSource;
-    this.touchSource = touchSource;
-    this.inputSources = [
-      keyboardSource,
-      mouseSource,
-      gamepadSource,
-      touchSource,
-    ];
     this.comboSystem = new ComboSystem();
     this.inputBuffer = new InputBuffer(bufferSize, bufferDuration);
   }
