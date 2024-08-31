@@ -328,9 +328,6 @@ export class InputMapper {
       default:
         console.log("Unknown input type:", mapping.inputType);
         return false;
-      default:
-        console.log("Unknown input type:", mapping.inputType);
-        return false;
     }
   }
 
