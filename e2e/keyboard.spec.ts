@@ -7,6 +7,7 @@ test.describe("Keyboard Input Tests", () => {
     await page.evaluate(() => {
       window.lastKeyPressed = null;
       window.lastActions = [];
+      window.inputMapper.clearInputBuffer();
     });
   });
 
@@ -87,5 +88,48 @@ test.describe("Keyboard Input Tests", () => {
     const recentInputs = await page.evaluate(() => window.inputMapper.getRecentInputs());
     expect(recentInputs).toEqual(expect.arrayContaining(["jump"]));
     expect(recentInputs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test("Input buffer clearing", async ({ page }) => {
+    await page.evaluate(() => window.setContext("game"));
+    await page.keyboard.press("Space");
+    await page.keyboard.press("A");
+    
+    await page.evaluate(() => window.inputMapper.clearInputBuffer());
+    
+    const recentInputs = await page.evaluate(() => window.inputMapper.getRecentInputs());
+    expect(recentInputs).toHaveLength(0);
+  });
+
+  test("Rapid key presses", async ({ page }) => {
+    await page.evaluate(() => window.setContext("game"));
+    
+    // Simulate rapid key presses
+    for (let i = 0; i < 5; i++) {
+      await page.keyboard.press("Space", { delay: 50 });
+    }
+
+    const actions = await page.evaluate(() => {
+      window.inputMapper.update();
+      return window.inputMapper.mapInput();
+    });
+
+    expect(actions.filter(action => action === "jump").length).toBe(5);
+  });
+
+  test("Long key press", async ({ page }) => {
+    await page.evaluate(() => window.setContext("game"));
+    
+    await page.keyboard.down("Space");
+    await page.waitForTimeout(1000); // Hold for 1 second
+    await page.keyboard.up("Space");
+
+    const actions = await page.evaluate(() => {
+      window.inputMapper.update();
+      return window.inputMapper.mapInput();
+    });
+
+    expect(actions).toContain("jump");
+    expect(actions.filter(action => action === "jump").length).toBe(1);
   });
 });
