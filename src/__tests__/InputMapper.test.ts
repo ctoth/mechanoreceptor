@@ -1,11 +1,11 @@
-import { describe, beforeEach, afterEach, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { ComboSystem } from "../ComboSystem";
+import { GamepadSource } from "../GamepadSource";
 import { InputMapper } from "../InputMapper";
 import { MappingConfigManager } from "../InputMapping";
 import { KeyboardSource } from "../KeyboardSource";
 import { MouseSource } from "../MouseSource";
-import { GamepadSource } from "../GamepadSource";
 import { TouchSource } from "../TouchSource";
-import { ComboSystem } from "../ComboSystem";
 
 vi.mock("../KeyboardSource");
 vi.mock("../MouseSource");
@@ -37,9 +37,6 @@ describe("InputMapper", () => {
 
     // Mock the ComboSystem constructor
     (ComboSystem as unknown as vi.Mock).mockImplementation(() => comboSystem);
-
-    // Mock the getMappingsForContext method
-    mappingManager.getMappingsForContext = vi.fn().mockReturnValue([]);
   });
 
   test("setContext changes the current context", () => {
@@ -156,8 +153,11 @@ describe("InputMapper", () => {
 
   test("getRecentInputs returns correct inputs", () => {
     const inputMapper = new InputMapper(
-      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
+      keyboardSource,
+      mouseSource,
+      gamepadSource,
+      touchSource,
       5,
       1000
     );
@@ -196,8 +196,11 @@ describe("InputMapper", () => {
 
   test("clearInputBuffer clears the input buffer", () => {
     const inputMapper = new InputMapper(
-      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
+      keyboardSource,
+      mouseSource,
+      gamepadSource,
+      touchSource,
       5,
       1000
     );
@@ -228,8 +231,11 @@ describe("InputMapper", () => {
 
   test("setInputBufferSize changes the buffer size", () => {
     const inputMapper = new InputMapper(
-      [keyboardSource, mouseSource, gamepadSource, touchSource],
       mappingManager,
+      keyboardSource,
+      mouseSource,
+      gamepadSource,
+      touchSource,
       5,
       1000
     );
