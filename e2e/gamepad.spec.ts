@@ -48,16 +48,25 @@ test.describe("Gamepad Input Tests", () => {
   test("Gamepad input mapping", async ({ page }) => {
     await page.evaluate(() => {
       window.setContext("game");
-      const gamepad = { buttons: [{ pressed: true, value: 1 }], axes: [] };
+      const gamepad = { index: 0, buttons: [{ pressed: true, value: 1 }], axes: [] };
       window.gamepadSource.updateGamepadState(gamepad);
     });
 
-    const actions = await page.evaluate(() => {
+    const result = await page.evaluate(() => {
       window.inputMapper.update();
-      return window.inputMapper.mapInput();
+      const actions = window.inputMapper.mapInput();
+      console.log('Mapped actions:', actions);
+      return {
+        actions,
+        mappings: window.inputMapper.mappingManager.getMappings(),
+        gamepadState: window.gamepadSource.getGamepadState(0)
+      };
     });
 
-    expect(actions).toContain("accelerate");
+    console.log('Test result:', result);
+
+    expect(result.actions).toContain("accelerate");
+    expect(result.gamepadState.buttons[0].pressed).toBe(true);
   });
 
   test("Gamepad disconnection detection", async ({ page }) => {
