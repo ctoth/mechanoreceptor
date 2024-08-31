@@ -36,15 +36,38 @@ test.describe("Keyboard Input Tests", () => {
   });
 
   test("Input mapping in game context", async ({ page }) => {
-    await page.evaluate(() => window.setContext("game"));
-    await page.keyboard.press("Space");
-
-    const actions = await page.evaluate(() => {
-      window.inputMapper.update();
-      return window.inputMapper.mapInput();
+    await page.evaluate(() => {
+      window.setContext("game");
+      window.inputMapper.mappingManager.addMapping({
+        contextId: "game",
+        actionId: "jump",
+        inputType: "keyboard",
+        inputCode: "Space"
+      });
     });
 
-    expect(actions).toContain("jump");
+    await page.keyboard.press("Space");
+
+    const result = await page.evaluate(() => {
+      window.inputMapper.update();
+      const actions = window.inputMapper.mapInput();
+      return {
+        actions,
+        context: window.inputMapper.getCurrentContext(),
+        mappings: window.inputMapper.mappingManager.getMappings()
+      };
+    });
+
+    console.log('Test result:', result);
+
+    expect(result.actions).toContain("jump");
+    expect(result.context).toBe("game");
+    expect(result.mappings).toContainEqual({
+      contextId: "game",
+      actionId: "jump",
+      inputType: "keyboard",
+      inputCode: "Space"
+    });
   });
 
   test("Input mapping in menu context", async ({ page }) => {

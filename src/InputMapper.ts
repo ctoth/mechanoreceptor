@@ -259,6 +259,9 @@ export class InputMapper {
     }
 
     console.log('Mapped actions:', triggeredActions);
+    console.log('Current context:', this.currentContext);
+    console.log('All mappings:', allMappings);
+    console.log('Filtered mappings:', mappings);
     return triggeredActions;
   }
 
