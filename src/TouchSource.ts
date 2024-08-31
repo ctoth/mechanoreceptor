@@ -166,6 +166,6 @@ export class TouchSource implements InputSource {
    * ```
    */
   isTouching(): boolean {
-    return this.touches.length > 0;
+    return this.touches.length > 0 || (window as any).lastTouch !== undefined;
   }
 }

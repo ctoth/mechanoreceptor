@@ -156,6 +156,12 @@ export class GamepadSource implements InputSource {
     return gamepad ? gamepad.buttons[buttonIndex]?.pressed || false : false;
   }
 
+  isButtonPressedRaw(gamepadIndex: number, buttonIndex: number): boolean {
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[gamepadIndex];
+    return gamepad ? gamepad.buttons[buttonIndex]?.pressed || false : false;
+  }
+
   /**
    * Gets the analog value of a specific button on a gamepad.
    * @param gamepadIndex - The index of the gamepad to check.

@@ -106,7 +106,7 @@ describe("InputMapper", () => {
     mappingManager.loadMappings(JSON.stringify(mappings));
 
     gamepadSource.getConnectedGamepads.mockReturnValue([0]);
-    gamepadSource.isButtonPressed.mockImplementation(
+    gamepadSource.isButtonPressedRaw.mockImplementation(
       (index: number, button: number) => index === 0 && button === 7
     );
     comboSystem.checkCombos.mockReturnValue([]);

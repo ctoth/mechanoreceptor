@@ -307,11 +307,10 @@ export class InputMapper {
       }
       case "gamepad": {
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
-        if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('button')) {
-          const buttonIndex = parseInt(mapping.inputCode.slice(6), 10);
-          const gamepadState = this.gamepadSource.isButtonPressed(
+        if (typeof mapping.inputCode === 'number') {
+          const gamepadState = this.gamepadSource.isButtonPressedRaw(
             gamepadIndex,
-            buttonIndex
+            mapping.inputCode
           );
           return gamepadState;
         } else if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('axis')) {
@@ -326,6 +325,9 @@ export class InputMapper {
         console.log("Touch state:", touchState);
         return touchState;
       }
+      default:
+        console.log("Unknown input type:", mapping.inputType);
+        return false;
       default:
         console.log("Unknown input type:", mapping.inputType);
         return false;
