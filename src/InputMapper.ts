@@ -86,7 +86,10 @@ export class InputMapper {
   private comboSystem: ComboSystem;
   private inputBuffer: InputBuffer;
   private currentContext = "default";
-  inputSources: InputSource[];
+  private keyboardSource: KeyboardSource;
+  private mouseSource: MouseSource;
+  private gamepadSource: GamepadSource;
+  private touchSource: TouchSource;
 
   /**
    * Gets the current input context.
@@ -99,16 +102,22 @@ export class InputMapper {
   /**
    * Creates a new InputMapper instance.
    *
-   * @param inputSources - An array of InputSource instances.
    * @param mappingManager - The MappingConfigManager instance for handling input mappings.
+   * @param keyboardSource - The KeyboardSource instance.
+   * @param mouseSource - The MouseSource instance.
+   * @param gamepadSource - The GamepadSource instance.
+   * @param touchSource - The TouchSource instance.
    * @param bufferSize - The size of the input buffer (default: 10).
    * @param bufferDuration - The duration of the input buffer in milliseconds (default: 100).
    *
    * @throws {Error} If any of the required parameters are missing or invalid.
    */
   constructor(
-    inputSources: InputSource[],
     mappingManager: MappingConfigManager,
+    keyboardSource: KeyboardSource,
+    mouseSource: MouseSource,
+    gamepadSource: GamepadSource,
+    touchSource: TouchSource,
     bufferSize = 10,
     bufferDuration = 100
   ) {
@@ -116,17 +125,13 @@ export class InputMapper {
       throw new Error("Mapping manager must be provided");
     }
 
-    this.inputSources = inputSources;
     this.mappingManager = mappingManager;
+    this.keyboardSource = keyboardSource;
+    this.mouseSource = mouseSource;
+    this.gamepadSource = gamepadSource;
+    this.touchSource = touchSource;
     this.comboSystem = new ComboSystem();
     this.inputBuffer = new InputBuffer(bufferSize, bufferDuration);
-  }
-
-  private findSourceByName(
-    sources: InputSource[],
-    name: string
-  ): InputSource | undefined {
-    return sources.find((source) => source.constructor.name === name);
   }
 
   /**
@@ -227,9 +232,8 @@ export class InputMapper {
    * you ensure that your game consistently responds to player inputs with minimal latency.
    */
   mapInput(): string[] {
-    console.log(this.mappingManager);
-    const mappings = this.mappingManager.getMappingsForContext(
-      this.currentContext
+    const mappings = this.mappingManager.getMappings().filter(
+      mapping => mapping.contextId === this.currentContext
     );
     const triggeredActions: string[] = [];
 
@@ -252,7 +256,6 @@ export class InputMapper {
       }
     }
 
-    (window as any).lastActions = triggeredActions; // Update the global lastActions for testing
     return triggeredActions;
   }
 

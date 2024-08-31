@@ -31,8 +31,11 @@ describe("InputMapper", () => {
     comboSystem = new ComboSystem() as vi.Mocked<ComboSystem>;
 
     inputMapper = new InputMapper(
-      [keyboardSource, mouseSource, gamepadSource, touchSource],
-      mappingManager
+      mappingManager,
+      keyboardSource,
+      mouseSource,
+      gamepadSource,
+      touchSource
     );
 
     // Mock the ComboSystem constructor
