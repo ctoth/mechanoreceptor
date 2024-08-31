@@ -17,11 +17,14 @@ test.describe("Keyboard Input Tests", () => {
   });
 
   test("Multiple key press detection", async ({ page }) => {
-    await page.keyboard.press("A");
-    await page.keyboard.press("B");
-    await page.keyboard.press("C");
+    await page.keyboard.down("A");
+    await page.keyboard.down("B");
+    await page.keyboard.down("C");
     const pressedKeys = await page.evaluate(() => window.keyboardSource.getPressedKeys());
     expect(pressedKeys).toEqual(expect.arrayContaining(["KeyA", "KeyB", "KeyC"]));
+    await page.keyboard.up("A");
+    await page.keyboard.up("B");
+    await page.keyboard.up("C");
   });
 
   test("Key release detection", async ({ page }) => {

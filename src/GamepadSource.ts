@@ -136,12 +136,13 @@ export class GamepadSource implements InputSource {
    * Updates the state of a single gamepad.
    * @param gamepad - The Gamepad object to update.
    */
-  private updateGamepadState(gamepad: Gamepad): void {
+  updateGamepadState(gamepad: Gamepad): void {
     const state: GamepadState = {
       buttons: gamepad.buttons.map(button => ({ pressed: button.pressed, value: button.value })),
       axes: [...gamepad.axes]
     };
     this.gamepads.set(gamepad.index, state);
+    console.log(`Updated gamepad state for index ${gamepad.index}:`, state);
   }
 
   /**

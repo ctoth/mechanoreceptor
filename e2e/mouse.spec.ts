@@ -25,7 +25,10 @@ test.describe("Mouse Input Tests", () => {
   test("Mouse button release detection", async ({ page }) => {
     await page.mouse.down();
     await page.mouse.up();
-    const isButtonPressed = await page.evaluate(() => window.mouseSource.isButtonPressed(0));
+    const isButtonPressed = await page.evaluate(() => {
+      window.mouseSource.update(); // Ensure the state is updated
+      return window.mouseSource.isButtonPressed(0);
+    });
     expect(isButtonPressed).toBe(false);
   });
 

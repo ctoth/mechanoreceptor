@@ -25,7 +25,7 @@ test.describe("Gamepad Input Tests", () => {
 
   test("Gamepad button press detection", async ({ page }) => {
     await page.evaluate(() => {
-      const gamepad = { buttons: [{ pressed: true, value: 1 }], axes: [] };
+      const gamepad = { index: 0, buttons: [{ pressed: true, value: 1 }], axes: [] };
       window.gamepadSource.updateGamepadState(gamepad);
     });
     const isButtonPressed = await page.evaluate(() => {
