@@ -239,6 +239,7 @@ export class InputMapper {
     const triggeredActions: string[] = [];
 
     for (const mapping of mappings) {
+      this.logInputState(mapping);
       const isActive = this.isInputActive(mapping);
       if (isActive) {
         triggeredActions.push(mapping.actionId);
@@ -280,6 +281,10 @@ export class InputMapper {
       default:
         return false;
     }
+  }
+
+  private logInputState(mapping: InputMapping): void {
+    console.log(`Checking if ${mapping.inputCode} is pressed: ${this.isInputActive(mapping)}`);
   }
 
   private getInputState(mapping: InputMapping): boolean {
