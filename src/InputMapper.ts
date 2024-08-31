@@ -262,6 +262,9 @@ export class InputMapper {
 
   private isInputActive(mapping: InputMapping): boolean {
     const inputState = this.getInputState(mapping);
+    if (mapping.inputType === 'mouse' && typeof mapping.inputCode === 'number') {
+      return this.mouseSource.isButtonPressed(mapping.inputCode);
+    }
     return inputState;
   }
 
@@ -274,10 +277,11 @@ export class InputMapper {
         return keyState;
       }
       case "mouse": {
-        const mouseState = this.mouseSource.isButtonPressed(
-          mapping.inputCode as number
-        );
-        return mouseState;
+        if (typeof mapping.inputCode === 'number') {
+          const mouseState = this.mouseSource.isButtonPressed(mapping.inputCode);
+          return mouseState;
+        }
+        return false;
       }
       case "gamepad": {
         const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
