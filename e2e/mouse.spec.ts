@@ -39,7 +39,16 @@ test.describe("Mouse Input Tests", () => {
   });
 
   test("Mouse input mapping", async ({ page }) => {
-    await page.evaluate(() => window.setContext("game"));
+    await page.evaluate(() => {
+      window.setContext("game");
+      window.inputMapper.mappingManager.addMapping({
+        contextId: "game",
+        actionId: "shoot",
+        inputType: "mouse",
+        inputCode: 0
+      });
+    });
+
     await page.mouse.down();
     
     const actions = await page.evaluate(() => {

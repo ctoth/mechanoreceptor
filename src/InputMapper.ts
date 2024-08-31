@@ -257,15 +257,29 @@ export class InputMapper {
       }
     }
 
+    console.log('Mapped actions:', triggeredActions);
     return triggeredActions;
   }
 
   private isInputActive(mapping: InputMapping): boolean {
-    const inputState = this.getInputState(mapping);
-    if (mapping.inputType === 'mouse' && typeof mapping.inputCode === 'number') {
-      return this.mouseSource.isButtonPressed(mapping.inputCode);
+    switch (mapping.inputType) {
+      case 'keyboard':
+        return this.keyboardSource.isKeyPressed(mapping.inputCode as string);
+      case 'mouse':
+        if (typeof mapping.inputCode === 'number') {
+          return this.mouseSource.isButtonPressed(mapping.inputCode);
+        }
+        return false;
+      case 'gamepad':
+        const gamepadIndex = this.gamepadSource.getConnectedGamepads()[0];
+        if (typeof mapping.inputCode === 'string' && mapping.inputCode.startsWith('button')) {
+          const buttonIndex = parseInt(mapping.inputCode.slice(6), 10);
+          return this.gamepadSource.isButtonPressed(gamepadIndex, buttonIndex);
+        }
+        return false;
+      default:
+        return false;
     }
-    return inputState;
   }
 
   private getInputState(mapping: InputMapping): boolean {
