@@ -15,6 +15,7 @@
     "lint": "eslint src/**/*.ts e2e/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts e2e/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\" \"e2e/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"e2e/**/*.ts\"",
     "docs": "typedoc --out docs --exclude *.test.ts src"
   },
   "repository": {
