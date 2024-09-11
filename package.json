@@ -34,6 +34,9 @@
     "url": "https://github.com/ctoth/mechanoreceptor/issues"
   },
   "homepage": "https://github.com/ctoth/mechanoreceptor#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.46.1",
     "@testing-library/dom": "^10.4.0",
