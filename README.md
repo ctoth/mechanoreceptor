@@ -148,7 +148,7 @@ Mechanoreceptor includes built-in performance optimizations:
 
 ## Documentation
 
-For detailed documentation on how to use Mechanoreceptor, including all available methods and advanced features, please refer to our [official documentation](https://github.com/yourusername/mechanoreceptor/wiki).
+For detailed documentation on how to use Mechanoreceptor, including all available methods and advanced features, please refer to our [official documentation](https://github.com/ctoth/mechanoreceptor/wiki).
 
 To generate the documentation, run:
 
@@ -168,6 +168,6 @@ Mechanoreceptor is released under the MIT License. See the [LICENSE](LICENSE) fi
 
 ## Support
 
-If you encounter any issues or have questions, please file an issue on our [GitHub issue tracker](https://github.com/yourusername/mechanoreceptor/issues).
+If you encounter any issues or have questions, please file an issue on our [GitHub issue tracker](https://github.com/ctoth/mechanoreceptor/issues).
 
 Happy gaming!
