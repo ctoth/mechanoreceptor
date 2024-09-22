@@ -139,12 +139,62 @@ For gamepads that support haptic feedback:
 gamepadSource.vibrate(0, 200, 0.5, 0.8); // Vibrate gamepad 0 for 200ms
 ```
 
+### Context-Based Input Mapping
+
+Mechanoreceptor allows you to define different input mappings for various game contexts:
+
+```typescript
+const menuMappings = [
+  { contextId: 'menu', actionId: 'select', inputType: 'keyboard', inputCode: 'Enter' },
+  { contextId: 'menu', actionId: 'back', inputType: 'keyboard', inputCode: 'Escape' },
+];
+
+const gameplayMappings = [
+  { contextId: 'gameplay', actionId: 'jump', inputType: 'keyboard', inputCode: 'Space' },
+  { contextId: 'gameplay', actionId: 'attack', inputType: 'mouse', inputCode: 0 },
+];
+
+mappingManager.loadMappings(JSON.stringify([...menuMappings, ...gameplayMappings]));
+
+// Switch context when transitioning from menu to gameplay
+inputMapper.setContext('gameplay');
+```
+
+### Mouse Input with Throttling and Debouncing
+
+Mechanoreceptor optimizes mouse input handling:
+
+```typescript
+const mouseSource = new MouseSource(16, 100); // 16ms throttle, 100ms debounce
+mouseSource.initialize();
+
+// In your game loop
+const mousePosition = mouseSource.getPosition();
+const isLeftButtonPressed = mouseSource.isButtonPressed(0);
+```
+
+### Touch Input for Mobile Devices
+
+Support touch-based input for mobile gaming:
+
+```typescript
+const touchSource = new TouchSource();
+touchSource.initialize();
+
+// In your game loop
+if (touchSource.isTouching()) {
+  const touches = touchSource.getTouches();
+  // Handle touch input
+}
+```
+
 ## Performance Optimization
 
 Mechanoreceptor includes built-in performance optimizations:
 
 - Mouse move events are throttled and debounced for smooth performance.
 - Gamepad state is polled at a fixed interval to balance responsiveness and efficiency.
+- Input buffering allows for timing-sensitive inputs without compromising performance.
 
 ## Documentation
 
