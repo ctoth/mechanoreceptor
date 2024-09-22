@@ -148,7 +148,7 @@ Mechanoreceptor includes built-in performance optimizations:
 
 ## Documentation
 
-For detailed documentation on how to use Mechanoreceptor, including all available methods and advanced features, please refer to our [official documentation](https://github.com/yourusername/mechanoreceptor/wiki).
+For detailed documentation on how to use Mechanoreceptor, including all available methods and advanced features, please refer to our [official documentation](https://github.com/ctoth/mechanoreceptor/wiki).
 
 To generate the documentation, run:
 
