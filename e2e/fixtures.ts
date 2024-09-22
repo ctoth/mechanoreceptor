@@ -1,7 +1,10 @@
-import { test as base } from "@playwright/test";
+import { test as base, chromium } from "@playwright/test";
 
 export const test = base.extend({
   page: async ({ page }, use) => {
+    // Ensure browsers are installed
+    await chromium.ensureBrowsersInstalled();
+
     page.on("console", (msg) => {
       console.log(`Browser console [${msg.type()}]:`, msg.text());
     });
